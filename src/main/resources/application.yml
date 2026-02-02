@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: sawari
+  datasource:
+    url: jdbc:mysql://localhost:3307/ride_db
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  port: 8088
+
