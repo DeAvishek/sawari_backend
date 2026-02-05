@@ -3,7 +3,9 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+#yml files
+application-dev.yml
+application-prod.yml
 ### STS ###
 .apt_generated
 .classpath
