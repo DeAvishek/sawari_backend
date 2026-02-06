@@ -14,6 +14,7 @@ public class RiderController {
 
     @Autowired
     private RiderService riderService;
+
     @PostMapping("/create_user")
     public void createRider(@RequestBody Rider rider){
         riderService.CreateRider(rider);

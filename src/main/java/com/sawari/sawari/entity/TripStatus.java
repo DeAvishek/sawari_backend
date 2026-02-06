@@ -17,7 +17,7 @@ public class TripStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TripId")
-    private int Id;
+    private Integer Id;
 
     @Column(nullable = false,unique = false)
     private String Source;

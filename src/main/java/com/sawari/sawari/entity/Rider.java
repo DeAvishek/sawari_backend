@@ -16,7 +16,7 @@ public class Rider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "UserId")
-    private int Id;
+    private Integer Id;
 
     @Column(nullable = false,unique = true)
     private String UserName;
@@ -24,14 +24,17 @@ public class Rider {
     @Column(length = 10 ,unique = true)
     private String PhoneNumber;
 
-    @Column(length = 6 ,unique = true)
+    @Column(length = 6)
     private String Otp;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean IsVerified;
+//    @Column(columnDefinition = "boolean default false")
+    private Boolean IsVerified;
 
     @CreationTimestamp
     private LocalDateTime CreatedDate;
+
+    @Column(nullable = false)
+    private LocalDateTime OtpExpiredAt;
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<TripStatus>Trips;
