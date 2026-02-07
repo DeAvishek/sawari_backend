@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class RiderService {
             RiderPhoneNumber = "+91"+RiderPhoneNumber;
             //off this service due to running out of money in Twilio ...uncomment only when need
             //otpGeneratorAndSenderService.SendOtp(RiderPhoneNumber,RiderOtp);
+            rider.setTrips(new ArrayList<>());
             riderRepository.save(rider);
         }catch(Exception e){
             log.error(e.getMessage());

@@ -2,6 +2,8 @@ package com.sawari.sawari.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,7 +29,7 @@ public class Rider {
     @Column(length = 6)
     private String Otp;
 
-//    @Column(columnDefinition = "boolean default false")
+
     private Boolean IsVerified;
 
     @CreationTimestamp
@@ -36,6 +38,6 @@ public class Rider {
     @Column(nullable = false)
     private LocalDateTime OtpExpiredAt;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private Set<TripStatus>Trips;
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    private List<TripRecord> Trips;
 }
