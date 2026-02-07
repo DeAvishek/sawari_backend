@@ -1,7 +1,6 @@
 package com.sawari.sawari.entity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import com.sawari.sawari.support.EnumValues;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "Trip")
-public class TripStatus {
+public class TripRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TripId")
@@ -26,10 +25,16 @@ public class TripStatus {
     private String Destination;
 
     @Enumerated(EnumType.STRING)
-    private EnumValues.TripStatusEnum TripStatus = EnumValues.TripStatusEnum.Requested;
+    private EnumValues.TripStatusEnum TripStatus;
+
+    @Column(nullable = false)
+    private Integer cost;
+
+    @Column(nullable = false)
+    private Long Distance;
 
     @Enumerated(EnumType.STRING)
-    private EnumValues.PaymentStatusEnum PaymentStatus = EnumValues.PaymentStatusEnum.Pending;
+    private EnumValues.PaymentStatusEnum PaymentStatus;
 
     @CreationTimestamp
     private LocalDateTime CreatedAt;
