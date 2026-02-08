@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private static final String jwtSecret="253653729264993620383525303816242702679925371039";
+    @Value("${app.jwt.secret}")
+    private String jwtSecret;
 
     public String GenerateJwtToken(String userName){
         Map<String,Object>claims=new HashMap<String,Object>();
@@ -28,7 +30,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60*30))
                 .signWith(GetSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
