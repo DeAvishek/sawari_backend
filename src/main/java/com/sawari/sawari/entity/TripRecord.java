@@ -16,31 +16,31 @@ public class TripRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TripId")
-    private Integer Id;
+    private Integer id;
 
     @Column(nullable = false,unique = false)
-    private String Source;
+    private String source;
 
     @Column(nullable = false,unique = false)
-    private String Destination;
+    private String destination;
 
     @Enumerated(EnumType.STRING)
-    private EnumValues.TripStatusEnum TripStatus;
+    private EnumValues.TripStatusEnum tripStatus;
 
     @Column(nullable = false)
     private Integer cost;
 
     @Column(nullable = false)
-    private Long Distance;
+    private Long distance;
 
     @Enumerated(EnumType.STRING)
-    private EnumValues.PaymentStatusEnum PaymentStatus;
+    private EnumValues.PaymentStatusEnum paymentStatus;
 
     @CreationTimestamp
-    private LocalDateTime CreatedAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId")
-    private Rider Rider;
+    private Rider rider;
 
 }

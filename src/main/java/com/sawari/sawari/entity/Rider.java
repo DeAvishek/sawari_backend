@@ -18,26 +18,28 @@ public class Rider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "UserId")
-    private Integer Id;
+    private Integer id;
 
     @Column(nullable = false,unique = true)
-    private String UserName;
+    private String userName;
 
-    @Column(length = 10 ,unique = true)
-    private String PhoneNumber;
+    @Column(length = 10,unique = true)
+    private String phoneNumber;
+
+    private String role;
 
     @Column(length = 6)
-    private String Otp;
+    private String otp;
 
 
-    private Boolean IsVerified;
+    private Boolean isVerified;
 
     @CreationTimestamp
-    private LocalDateTime CreatedDate;
+    private LocalDateTime createdDate;
 
     @Column(nullable = false)
-    private LocalDateTime OtpExpiredAt;
+    private LocalDateTime otpExpiredAt;
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
-    private List<TripRecord> Trips;
+    private List<TripRecord> trips;
 }
