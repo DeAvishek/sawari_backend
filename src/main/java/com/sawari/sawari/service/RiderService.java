@@ -24,11 +24,10 @@ public class RiderService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
     @Autowired
     private RiderRepository riderRepository;
 
-    public void CreateRider(Rider rider){
+    public Rider CreateRider(Rider rider){
         try{
             String RiderOtp = otpGeneratorAndSenderService.GenerateOtp();
             String RiderPhoneNumber = rider.getPhoneNumber();
@@ -41,8 +40,10 @@ public class RiderService {
             rider.setRole("RIDER");
             rider.setTrips(new ArrayList<>());
             riderRepository.save(rider);
+            return rider;
         }catch(Exception e){
             log.error(e.getMessage());
+            return null;
         }
     }
     public String verifyOtp(OtpPojo otp,Integer rider){
@@ -67,4 +68,5 @@ public class RiderService {
         }
 
     }
+
 }
