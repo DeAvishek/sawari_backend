@@ -19,7 +19,7 @@ public class TripService {
     private TripRecordRepository tripRecordRepository;
     @Autowired
     private RiderRepository riderRepository;
-    public void SaveTrip(Integer RiderId, TripRecord tripRecord){
+    public TripRecord SaveTrip(Integer RiderId, TripRecord tripRecord){
         try{
             Rider ExistedRider = riderRepository.findById(RiderId)
                     .orElseThrow(() -> new Exception("Rider not found"));
@@ -30,8 +30,10 @@ public class TripService {
 
             ExistedRider.getTrips().add(tripRecord);
             riderRepository.save(ExistedRider); //-->save the trip in rider entity
+            return tripRecord;
         }catch(Exception e){
             log.error(e.getMessage());
+            return null;
         }
     }
 }
