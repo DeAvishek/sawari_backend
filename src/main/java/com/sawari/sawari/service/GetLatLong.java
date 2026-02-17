@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class GetLatLong {
     @Autowired
     private RedisService redisService;
-
+    private String Ans = "";
     private static String LocationIQApiKey = "pk.7d3dc7f86db9c8b5c9adbe39d87df682";  //need to set the Api key in env
     private static final String Url = "https://us1.locationiq.com/v1/";
     public ResponseEntity<String> GetLatAndLongForLocation(String Location){
