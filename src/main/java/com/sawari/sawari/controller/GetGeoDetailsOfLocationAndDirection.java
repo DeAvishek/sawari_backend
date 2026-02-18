@@ -26,6 +26,5 @@ public class GetGeoDetailsOfLocationAndDirection {
     public  ResponseEntity<DirectionResponse> getRoutes(){
         return getDirectionsLIq.getDirections();
     }
-//
 
 }

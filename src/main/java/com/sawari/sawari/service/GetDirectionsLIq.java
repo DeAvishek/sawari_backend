@@ -1,16 +1,28 @@
 package com.sawari.sawari.service;
 
+import com.sawari.sawari.helper.StringFormatter;
 import com.sawari.sawari.pojo.DirectionResponse;
+import com.sawari.sawari.pojo.Route;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @Slf4j
 public class GetDirectionsLIq {
-    private static String LocationIQApiKey = "pk.7d3dc7f86db9c8b5c9adbe39d87df682"; //todo
+    @Value("${LocationIq.account.api}")
+    private String LocationIQApiKey; //todo
+
+    @Autowired
+    private StringFormatter stringFormatter;
+    @Autowired
+    private RedisService redisService;
     private static final String Url = "https://us1.locationiq.com/v1/directions/";
     //hardcoded need to update
     private Double srcLat = 51.514156;
@@ -28,9 +40,15 @@ public class GetDirectionsLIq {
                     dstLat,
                     LocationIQApiKey
             );
-            System.out.println(uri); //todo to remove
+            String redisKeyForSrcDestGeocode = stringFormatter.FormatStringForSrcDestGeocode(srcLon, srcLat, dstLon, dstLat);
+            DirectionResponse GeometryFromRedis = redisService.getFromRedisGeometry(redisKeyForSrcDestGeocode);
+            if(GeometryFromRedis != null){
+                System.out.println("get it from redis");
+                return new ResponseEntity<>(GeometryFromRedis, HttpStatus.OK);
+            }
             RestTemplate restTemplate = new RestTemplate();
             DirectionResponse response =  restTemplate.getForObject(uri, DirectionResponse.class);
+            redisService.SetToRedisGeometry(redisKeyForSrcDestGeocode,response,24, TimeUnit.HOURS);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch(Exception e){
             log.error("Error while fetching directions", e.getMessage());
