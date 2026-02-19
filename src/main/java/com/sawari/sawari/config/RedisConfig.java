@@ -2,6 +2,7 @@ package com.sawari.sawari.config;
 
 import com.sawari.sawari.pojo.DirectionResponse;
 import com.sawari.sawari.pojo.Geocode;
+import com.sawari.sawari.pojo.RedisTripSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -27,6 +28,16 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new JacksonJsonRedisSerializer<>(DirectionResponse.class));
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, RedisTripSession> redisTemplate3(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, RedisTripSession> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new JacksonJsonRedisSerializer<>(RedisTripSession.class));
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
