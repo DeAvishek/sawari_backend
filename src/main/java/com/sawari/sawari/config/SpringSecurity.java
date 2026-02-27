@@ -29,7 +29,6 @@ public class SpringSecurity {
                                 .requestMatchers("/trip/create_trip_for/**").authenticated()
                                 .anyRequest().permitAll()
                 )
-
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers->headers.frameOptions(frame->frame.disable()))
                 .build();
