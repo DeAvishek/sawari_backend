@@ -3,6 +3,7 @@ package com.sawari.sawari.controller;
 import com.sawari.sawari.entity.Rider;
 import com.sawari.sawari.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ public class RiderController {
     private RiderService riderService;
 
     @PostMapping("/create_user")
-    public void createRider(@RequestBody Rider rider){
-        riderService.CreateRider(rider);
+    public ResponseEntity<?> createRider(@RequestBody Rider rider){
+        return riderService.CreateRider(rider);
     }
 }

@@ -7,6 +7,8 @@ import com.sawari.sawari.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class RiderService {
     @Autowired
     private RiderRepository riderRepository;
 
-    public Rider CreateRider(Rider rider){
+    public ResponseEntity<?> CreateRider(Rider rider){
         try{
             String RiderOtp = otpGeneratorAndSenderService.GenerateOtp();
             String RiderPhoneNumber = rider.getPhoneNumber();
@@ -39,11 +41,16 @@ public class RiderService {
             //otpGeneratorAndSenderService.SendOtp(RiderPhoneNumber,RiderOtp);
             rider.setRole("RIDER");
             rider.setTrips(new ArrayList<>());
-            riderRepository.save(rider);
-            return rider;
+            Rider savedRider = riderRepository.save(rider);
+            if(savedRider == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create rider");
+            }
+        return  ResponseEntity.status(HttpStatus.CREATED).body(savedRider);
         }catch(Exception e){
             log.error(e.getMessage());
-            return null;
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Something went wrong,user name duplication");
         }
     }
     public String verifyOtp(OtpPojo otp,Integer rider){
