@@ -14,8 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -53,25 +56,32 @@ public class RiderService {
                     .body("Something went wrong,user name duplication");
         }
     }
-    public String verifyOtp(OtpPojo otp,Integer rider){
+    public ResponseEntity<?>verifyOtp(OtpPojo otp,Integer rider){
         try{
             Rider ExitedRider = riderRepository.findById(rider)
                     .orElseThrow(()->new Exception("Rider not found"));
-            if(!ExitedRider.getIsVerified() ){
-                System.out.println("Rider otp "+ExitedRider.getOtp());
-                System.out.println("Pojo otp "+otp.getOtp());
-                if(otp.getOtp().equals(ExitedRider.getOtp())){
-                    ExitedRider.setIsVerified(true);
-                    ExitedRider.setOtp("");
-                    riderRepository.save(ExitedRider);
-                    return jwtUtil.GenerateJwtToken(ExitedRider.getUserName());
-                }
-                throw new Exception("Otp is not valid");
+
+            if(ExitedRider.getIsVerified()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("⚠ Rider is already verified");
             }
-            throw  new Exception("Otp has already been verified");
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime otpTime = ExitedRider.getOtpExpiredAt();
+            Duration duration = Duration.between(now, otpTime);
+            if(duration.toMinutes()>5){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Otp has expired⌛");
+            }
+            if(!otp.getOtp().equals(ExitedRider.getOtp())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Invalid OTP! please try again later");
+            }
+            ExitedRider.setIsVerified(true);
+            ExitedRider.setOtp("");
+            riderRepository.save(ExitedRider);
+            Map<String,String>response = new HashMap<>();
+            response.put("bearer",jwtUtil.GenerateJwtToken(ExitedRider.getUserName()));
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(Exception e){
             log.error(e.getMessage());
-            return "";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went Wrong please Try again!🔁");
         }
 
     }
