@@ -78,6 +78,7 @@ public class RiderService {
             riderRepository.save(ExitedRider);
             Map<String,String>response = new HashMap<>();
             response.put("bearer",jwtUtil.GenerateJwtToken(ExitedRider.getUserName()));
+            System.out.println("otp verified successfully😍 at "+LocalDateTime.now()); //Todo
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(Exception e){
             log.error(e.getMessage());
