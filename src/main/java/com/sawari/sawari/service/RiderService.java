@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,8 +67,8 @@ public class RiderService {
             }
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime otpTime = ExitedRider.getOtpExpiredAt();
-            Duration duration = Duration.between(now, otpTime);
-            if(duration.toMinutes()>5){
+
+            if(now.isAfter(otpTime)){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Otp has expired⌛");
             }
             if(!otp.getOtp().equals(ExitedRider.getOtp())){
@@ -78,7 +79,7 @@ public class RiderService {
             riderRepository.save(ExitedRider);
             Map<String,String>response = new HashMap<>();
             response.put("bearer",jwtUtil.GenerateJwtToken(ExitedRider.getUserName()));
-            System.out.println("otp verified successfully😍 at "+LocalDateTime.now()); //Todo
+            log.info("otp verified successfully😍 "+LocalDateTime.now());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(Exception e){
             log.error(e.getMessage());
@@ -86,5 +87,4 @@ public class RiderService {
         }
 
     }
-
 }
