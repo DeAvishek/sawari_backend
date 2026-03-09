@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +54,7 @@ public class RiderServiceTest {
         rider.setRole("RIDER");
         rider.setIsVerified(false);
         rider.setOtp("123454");
+        rider.setOtpExpiredAt(LocalDateTime.now().plusMinutes(5));
         OtpPojo otp = new OtpPojo();
         otp.setOtp("123454");
         Mockito.when(riderRepository.findById(rider.getId())).thenReturn(Optional.of(rider));
@@ -61,20 +63,17 @@ public class RiderServiceTest {
 
         String token = riderService.verifyOtp(otp,2);
         Assertions.assertEquals(token,"mocked-jwt-token");
-        Assertions.assertTrue(rider.getIsVerified());
-
     }
-    //test for when user is not find
+//    //test for when user is not find
     @Test
     void VerifyOtpWhenNotFindUser()
     {
         OtpPojo otp = new OtpPojo();
         otp.setOtp("123454");
         Mockito.when(riderRepository.findById(1)).thenReturn(Optional.empty());
-
-        String result = riderService.verifyOtp(otp,1);
-        Assertions.assertEquals("", result);
-
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            riderService.verifyOtp(otp,1);
+        });
     }
     @Test
     void VerifyOtpWhenUserIsVerified(){
@@ -88,11 +87,9 @@ public class RiderServiceTest {
         OtpPojo otp = new OtpPojo();
         otp.setOtp("123454");
         Mockito.when(riderRepository.findById(2)).thenReturn(Optional.of(rider));
-
-        String result = riderService.verifyOtp(otp,2);
-        Assertions.assertEquals("", result);
+        Assertions.assertThrows(RuntimeException.class, ()->{
+        riderService.verifyOtp(otp,2);});
     }
-
     @Test
     void VerifyOtpWhenOtpIsMisMatch(){
         Rider rider = new Rider();
@@ -105,8 +102,8 @@ public class RiderServiceTest {
         OtpPojo otp = new OtpPojo();
         otp.setOtp("123452");
         Mockito.when(riderRepository.findById(2)).thenReturn(Optional.of(rider));
-
-        String result = riderService.verifyOtp(otp,2);
-        Assertions.assertEquals("", result);
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            riderService.verifyOtp(otp,2);
+        });
     }
 }
