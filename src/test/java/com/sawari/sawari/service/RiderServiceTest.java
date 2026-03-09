@@ -36,7 +36,6 @@ public class RiderServiceTest {
         Mockito.when(otpGeneratorAndSenderService.GenerateOtp()).thenReturn("12345");
         Mockito.when(riderRepository.save(rider)).thenReturn(rider);
         Rider addedRider = riderService.CreateRider(rider);
-
         //original test
         Assertions.assertEquals(rider.getId(), addedRider.getId());
     }

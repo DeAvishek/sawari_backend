@@ -6,20 +6,9 @@ import com.sawari.sawari.pojo.OtpPojo;
 import com.sawari.sawari.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -33,8 +22,7 @@ public class RiderService {
     @Autowired
     private RiderRepository riderRepository;
 
-    public ResponseEntity<?> CreateRider(Rider rider){
-        try{
+    public Rider CreateRider(Rider rider){
             String RiderOtp = otpGeneratorAndSenderService.GenerateOtp();
             String RiderPhoneNumber = rider.getPhoneNumber();
             rider.setIsVerified(false);
@@ -47,44 +35,30 @@ public class RiderService {
             rider.setTrips(new ArrayList<>());
             Rider savedRider = riderRepository.save(rider);
             if(savedRider == null){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create rider");
+                throw new RuntimeException("Something went wrong");
             }
-        return  ResponseEntity.status(HttpStatus.CREATED).body(savedRider);
-        }catch(Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Something went wrong,user name duplication");
-        }
+           return savedRider;
     }
-    public ResponseEntity<?>verifyOtp(OtpPojo otp,Integer rider){
-        try{
+    public String verifyOtp(OtpPojo otp,Integer rider){
             Rider ExitedRider = riderRepository.findById(rider)
-                    .orElseThrow(()->new Exception("Rider not found"));
+                    .orElseThrow(()->new RuntimeException("Rider not found"));
 
             if(ExitedRider.getIsVerified()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("⚠ Rider is already verified");
+                throw new RuntimeException("⚠ Rider is already verified");
             }
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime otpTime = ExitedRider.getOtpExpiredAt();
 
             if(now.isAfter(otpTime)){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Otp has expired⌛");
+                throw new RuntimeException("Otp has expired⌛");
             }
             if(!otp.getOtp().equals(ExitedRider.getOtp())){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Invalid OTP! please try again later");
+                throw new RuntimeException("❌ Invalid OTP! please try again later");
             }
             ExitedRider.setIsVerified(true);
             ExitedRider.setOtp("");
             riderRepository.save(ExitedRider);
-            Map<String,String>response = new HashMap<>();
-            response.put("bearer",jwtUtil.GenerateJwtToken(ExitedRider.getUserName()));
             log.info("otp verified successfully😍 "+LocalDateTime.now());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch(Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went Wrong please Try again!🔁");
-        }
-
+            return jwtUtil.GenerateJwtToken(ExitedRider.getUserName());
     }
 }
