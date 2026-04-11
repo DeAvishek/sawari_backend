@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sawari.sawari.pojo.AutocompleteLocation;
 import com.sawari.sawari.pojo.DirectionResponse;
+import com.sawari.sawari.support.EnumValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,6 +27,9 @@ public class RedisService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplateForAutocomplete;
+
+    @Autowired
+    private RedisTemplate<String,Object>redisTemplateForRideSession;
 
     public void setToRedis(String key, Geocode value, long ttl, TimeUnit timeUnit){
         try{
@@ -88,4 +92,24 @@ public class RedisService {
             return new ArrayList<>();
         }
     }
+
+    //Part 4 --- for create a Ride session in redis
+    public void createRideSession(String riderId,String driverId,String rideId,String pickup,String drop){
+        try {
+            String Key = "ride"+rideId;
+            redisTemplateForRideSession.opsForHash().put(Key,"riderId",riderId);
+            redisTemplateForRideSession.opsForHash().put(Key,"driverId",driverId);
+            redisTemplateForRideSession.opsForHash().put(Key,"otp","123456"); //otp is hard coded
+            redisTemplateForRideSession.opsForHash().put(Key,"pickup",pickup);
+            redisTemplateForRideSession.opsForHash().put(Key,"destination",drop);
+            redisTemplateForRideSession.opsForHash().put(Key,"status",EnumValues.TripStatusEnum.Requested.name()); //make sure to use all caps for every states
+            redisTemplateForRideSession.opsForHash().put(Key,"createdAt",LocalDateTime.now());
+            redisTemplateForRideSession.opsForHash().put(Key,"updatedAt",LocalDateTime.now());
+            redisTemplateForRideSession.expire(Key,2,TimeUnit.HOURS);
+            log.info("Successfully Created Ride Session😍");
+        }catch (Exception e){
+            log.error("Failed to create ride Session 😔",e.getMessage());
+        }
+    }
+
 }
