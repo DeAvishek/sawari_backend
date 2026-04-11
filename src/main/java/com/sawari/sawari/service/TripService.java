@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sawari.sawari.support.EnumValues;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -19,18 +21,19 @@ public class TripService {
     private TripRecordRepository tripRecordRepository;
     @Autowired
     private RiderRepository riderRepository;
-    public TripRecord SaveTrip(Integer RiderId, TripRecord tripRecord){
+    public TripRecord saveTrip(Integer RiderId, TripRecord tripRecord){
         try{
             Rider ExistedRider = riderRepository.findById(RiderId)
-                    .orElseThrow(() -> new Exception("Rider not found"));
+                    .orElseThrow(() -> new RuntimeException("Rider not found"));
             tripRecord.setRider(ExistedRider);
             tripRecord.setTripStatus(EnumValues.TripStatusEnum.Requested);
             tripRecord.setPaymentStatus(EnumValues.PaymentStatusEnum.Pending);
-            tripRecordRepository.save(tripRecord);//-->and save trip with respective rider
+            tripRecord.setCreatedAt(LocalDateTime.now());
+            TripRecord savedTrip = tripRecordRepository.save(tripRecord);//-->and save trip with respective rider and return the trip record
 
             ExistedRider.getTrips().add(tripRecord);
             riderRepository.save(ExistedRider); //-->save the trip in rider entity
-            return tripRecord;
+            return savedTrip;
         }catch(Exception e){
             log.error(e.getMessage());
             return null;

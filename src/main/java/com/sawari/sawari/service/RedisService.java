@@ -94,15 +94,15 @@ public class RedisService {
     }
 
     //Part 4 --- for create a Ride session in redis
-    public void createRideSession(String riderId,String driverId,String rideId,String pickup,String drop){
+    public void createRideSession(Integer riderId,Integer rideId,String pickup,String drop){
         try {
             String Key = "ride"+rideId;
             redisTemplateForRideSession.opsForHash().put(Key,"riderId",riderId);
-            redisTemplateForRideSession.opsForHash().put(Key,"driverId",driverId);
+            redisTemplateForRideSession.opsForHash().put(Key,"driverId",0);
             redisTemplateForRideSession.opsForHash().put(Key,"otp","123456"); //otp is hard coded
             redisTemplateForRideSession.opsForHash().put(Key,"pickup",pickup);
             redisTemplateForRideSession.opsForHash().put(Key,"destination",drop);
-            redisTemplateForRideSession.opsForHash().put(Key,"status",EnumValues.TripStatusEnum.Requested.name()); //make sure to use all caps for every states
+            redisTemplateForRideSession.opsForHash().put(Key,"status",EnumValues.TripStatusEnum.Requested.name());
             redisTemplateForRideSession.opsForHash().put(Key,"createdAt",LocalDateTime.now());
             redisTemplateForRideSession.opsForHash().put(Key,"updatedAt",LocalDateTime.now());
             redisTemplateForRideSession.expire(Key,2,TimeUnit.HOURS);
