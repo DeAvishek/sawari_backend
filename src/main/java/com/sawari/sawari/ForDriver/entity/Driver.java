@@ -3,6 +3,8 @@ package com.sawari.sawari.ForDriver.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Getter
 @Setter
@@ -25,4 +27,7 @@ public class Driver {
     private Boolean isVerified;
     private Boolean isOnline;
     private Boolean isOnRide;
+
+    @Column(nullable = false)
+    private LocalDateTime otpExpiredAt;
 }

@@ -35,10 +35,10 @@ public class SpringSecurity {
 
     }
     //ignoring the websocket
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/trip/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/trip/**");
+//    }
     //just basic password encrypter this
     @Bean
     public PasswordEncoder passwordEncoder() {
