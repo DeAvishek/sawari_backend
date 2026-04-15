@@ -51,6 +51,7 @@ public class RiderService {
 
             if(now.isAfter(otpTime)){
                 throw new RuntimeException("Otp has expired⌛");
+
             }
             if(!otp.getOtp().equals(ExitedRider.getOtp())){
                 throw new RuntimeException("❌ Invalid OTP! please try again later");

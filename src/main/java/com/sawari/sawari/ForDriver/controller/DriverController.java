@@ -26,7 +26,7 @@ public class DriverController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    @PostMapping("/verify/{id}")
     public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo){
         try {
             //NEED TO RETURN BEARER SAME AS RIDER
