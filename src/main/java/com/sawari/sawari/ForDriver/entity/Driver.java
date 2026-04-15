@@ -25,8 +25,4 @@ public class Driver {
     private Boolean isVerified;
     private Boolean isOnline;
     private Boolean isOnRide;
-
-    //private location other entity map to one <-> one with driver
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
-    private DriverLocation driverLocation;
 }
