@@ -18,7 +18,7 @@ public class Driver {
     private Integer id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false,length = 10)
+    @Column(unique = true,length = 10)
     private String phoneNumber;
 
     @Column(nullable = false,length =6)

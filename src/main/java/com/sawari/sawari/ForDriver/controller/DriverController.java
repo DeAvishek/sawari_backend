@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/driver")
 @Slf4j
@@ -26,13 +28,15 @@ public class DriverController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/verify/{id}")
-    public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo){
+    @PostMapping("/verify/{driverId}")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo, @PathVariable Integer driverId){
         try {
-            //NEED TO RETURN BEARER SAME AS RIDER
-            return null;
+            HashMap<String,String>result=new HashMap<>();
+            String token = driverService.VerifyOtp(otpPojo,driverId);
+            result.put("Bearer",token);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
-            return null;
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
