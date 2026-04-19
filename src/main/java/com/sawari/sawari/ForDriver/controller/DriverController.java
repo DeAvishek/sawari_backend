@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/driver")
+@RequestMapping("/Driver")
 @Slf4j
 public class DriverController {
     @Autowired
@@ -39,4 +39,5 @@ public class DriverController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 }

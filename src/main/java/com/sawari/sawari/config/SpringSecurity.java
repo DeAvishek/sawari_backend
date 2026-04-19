@@ -26,8 +26,8 @@ public class SpringSecurity {
                  csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(
                         request->request
-                                .requestMatchers("/trip/create_trip_for/**").authenticated()
-                                .anyRequest().permitAll()
+                                .requestMatchers("/Rider/create_user","/Rider/verify/**","/Driver/create","/Driver/verify/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers->headers.frameOptions(frame->frame.disable()))
