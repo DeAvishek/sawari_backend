@@ -1,12 +1,14 @@
 package com.sawari.sawari.controller;
 
 import com.sawari.sawari.entity.Rider;
+import com.sawari.sawari.pojo.PhoneNumber;
 import com.sawari.sawari.service.RiderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RestController
 @RequestMapping("/Rider")
 public class RiderController {
@@ -23,13 +25,15 @@ public class RiderController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/say_hello")
-    public ResponseEntity<?> sayHelloToPushpa(){
-        try {
-            return new ResponseEntity<>("Hello Pushpa", HttpStatus.OK);
+
+    @PostMapping("/login")
+    public ResponseEntity<?> LoginValidRider(@RequestBody PhoneNumber phNo){
+        try{
+            Rider existedRider = riderService.loginService(phNo);
+            return new ResponseEntity<>(existedRider,HttpStatus.OK);
         }catch (Exception e){
-//            log.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
 }

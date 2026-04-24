@@ -3,6 +3,7 @@ package com.sawari.sawari.service;
 import com.sawari.sawari.Repository.RiderRepository;
 import com.sawari.sawari.entity.Rider;
 import com.sawari.sawari.pojo.OtpPojo;
+import com.sawari.sawari.pojo.PhoneNumber;
 import com.sawari.sawari.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,17 @@ public class RiderService {
             riderRepository.save(ExitedRider);
             log.info("otp verified successfully😍 "+LocalDateTime.now());
             return jwtUtil.GenerateJwtToken(ExitedRider.getUserName());
+    }
+    public Rider loginService(PhoneNumber phNo){
+        if(phNo==null) throw new RuntimeException("phone number is null");
+        Rider exixtedRider = riderRepository.findRiderByPhoneNumber(phNo.getNumber());
+        if(exixtedRider==null){
+            throw new RuntimeException("Rider not found");
+        }
+        if(!exixtedRider.getIsVerified()){
+            throw new RuntimeException("Rider is Not verified");
+        }
+        exixtedRider.setOtp(otpGeneratorAndSenderService.GenerateOtp());
+        return exixtedRider;
     }
 }
