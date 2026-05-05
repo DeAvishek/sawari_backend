@@ -63,16 +63,18 @@ public class RiderService {
             log.info("otp verified successfully😍 "+LocalDateTime.now());
             return jwtUtil.GenerateJwtToken(ExitedRider.getUserName());
     }
+    //login service for rider
     public Rider loginService(PhoneNumber phNo){
         if(phNo==null) throw new RuntimeException("phone number is null");
-        Rider exixtedRider = riderRepository.findRiderByPhoneNumber(phNo.getNumber());
-        if(exixtedRider==null){
+        Rider existedRider = riderRepository.findRiderByPhoneNumber(String .valueOf(phNo.getNumber()));
+        if(existedRider==null){
             throw new RuntimeException("Rider not found");
         }
-        if(!exixtedRider.getIsVerified()){
+        if(!existedRider.getIsVerified()){
             throw new RuntimeException("Rider is Not verified");
         }
-        exixtedRider.setOtp(otpGeneratorAndSenderService.GenerateOtp());
-        return exixtedRider;
+        existedRider.setOtp(otpGeneratorAndSenderService.GenerateOtp());
+        riderRepository.save(existedRider);
+        return existedRider;
     }
 }

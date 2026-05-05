@@ -3,6 +3,8 @@ package com.sawari.sawari.ForDriver.service;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.repository.DriverRepository;
 import com.sawari.sawari.pojo.OtpPojo;
+import com.sawari.sawari.pojo.PhoneNumber;
+import com.sawari.sawari.service.OtpGeneratorAndSenderService;
 import com.sawari.sawari.utiils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +16,13 @@ import java.time.LocalDateTime;
 public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
-
+    @Autowired
+    private OtpGeneratorAndSenderService otpGeneratorAndSenderService;
     @Autowired
     private JwtUtil jwtUtil;
     public void saveDriver(Driver requestBody){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
-        requestBody.setOtp("123456"); //random hardcoded
+        requestBody.setOtp(otpGeneratorAndSenderService.GenerateOtp()); //random hardcoded
         requestBody.setIsOnline(false);
         requestBody.setIsOnRide(false);
         requestBody.setIsVerified(false);
@@ -43,5 +46,14 @@ public class DriverService {
         existedDriver.setOtp("");
         driverRepository.save(existedDriver);
         return jwtUtil.GenerateJwtToken(existedDriver.getName());
+    }
+    public Driver loginService(PhoneNumber phNo){
+        if(phNo==null) throw new RuntimeException("Invalid Request");
+        Driver existedDriver = driverRepository.findDriverByPhoneNumber(String.valueOf(phNo.getNumber()));
+        if(existedDriver==null) throw new RuntimeException("Driver not found");
+        if(existedDriver.getIsVerified()) throw new RuntimeException("Driver is already verified");
+        existedDriver.setOtp(otpGeneratorAndSenderService.GenerateOtp());
+        driverRepository.save(existedDriver);
+        return existedDriver;
     }
 }

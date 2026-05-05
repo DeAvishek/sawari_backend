@@ -26,6 +26,7 @@ public class RiderController {
         }
     }
 
+    //login service to verify existed user by PhoneNumber and otp
     @PostMapping("/login")
     public ResponseEntity<?> LoginValidRider(@RequestBody PhoneNumber phNo){
         try{

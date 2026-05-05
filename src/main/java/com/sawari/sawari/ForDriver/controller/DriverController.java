@@ -1,7 +1,9 @@
 package com.sawari.sawari.ForDriver.controller;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.service.DriverService;
+import com.sawari.sawari.entity.Rider;
 import com.sawari.sawari.pojo.OtpPojo;
+import com.sawari.sawari.pojo.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,16 @@ public class DriverController {
             result.put("Bearer",token);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> LoginValidDriver(@RequestBody PhoneNumber phNo){
+        try{
+            Driver existedDriver = driverService.loginService(phNo);
+            return new ResponseEntity<>(existedDriver, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
