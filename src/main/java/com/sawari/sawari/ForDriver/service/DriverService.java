@@ -1,17 +1,21 @@
 package com.sawari.sawari.ForDriver.service;
-
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.repository.DriverRepository;
 import com.sawari.sawari.pojo.OtpPojo;
 import com.sawari.sawari.pojo.PhoneNumber;
 import com.sawari.sawari.service.OtpGeneratorAndSenderService;
 import com.sawari.sawari.utiils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.loader.ast.spi.Loadable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-
 import java.time.LocalDateTime;
+import java.util.Set;
 
+@Slf4j
 @Service
 public class DriverService {
     @Autowired
@@ -20,6 +24,10 @@ public class DriverService {
     private OtpGeneratorAndSenderService otpGeneratorAndSenderService;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private RedisServiceForDriver redisServiceForDriver;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplateForOnlineDriver;
     public void saveDriver(Driver requestBody){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
         requestBody.setOtp(otpGeneratorAndSenderService.GenerateOtp()); //random hardcoded
@@ -43,8 +51,11 @@ public class DriverService {
         }
         //if everything okay then navigate to next phase
         existedDriver.setIsVerified(true);
+        existedDriver.setIsOnline(true);
         existedDriver.setOtp("");
         driverRepository.save(existedDriver);
+
+        updateinRedis(existedDriver); //after Successfull verification put the Rider to redis
         return jwtUtil.GenerateJwtToken(existedDriver.getName());
     }
     public Driver loginService(PhoneNumber phNo){
@@ -55,5 +66,23 @@ public class DriverService {
         existedDriver.setOtp(otpGeneratorAndSenderService.GenerateOtp());
         driverRepository.save(existedDriver);
         return existedDriver;
+    }
+    public void updateinRedis(Driver existedDriver){
+        redisServiceForDriver.AddOnlineDriver(existedDriver);
+    }
+    @Scheduled(fixedRate = 60000)
+    public void cleanOfflineDriversFromRedis(){
+        Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active-driver:*");
+        if(redisKeys==null || redisKeys.isEmpty()) return;
+        LocalDateTime currentTime = LocalDateTime.now();
+        for(String Key : redisKeys){
+            Object ob =  redisTemplateForOnlineDriver.opsForHash().get(Key,"updatedAt");
+            if(ob==null) continue;
+            LocalDateTime updatedAt = LocalDateTime.parse(ob.toString());
+            if(updatedAt.isBefore(currentTime.minusMinutes(1))){
+                redisTemplateForOnlineDriver.delete(Key);
+            };
+            log.info("Removed inactive driver {}", Key);
+        }
     }
 }
