@@ -16,6 +16,6 @@ public class WebsocketConfig implements WebSocketMessageBrokerConfigurer {
     }
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //Url where the client will connect to server for bidirectional communication
-        registry.addEndpoint("/trip").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 }
