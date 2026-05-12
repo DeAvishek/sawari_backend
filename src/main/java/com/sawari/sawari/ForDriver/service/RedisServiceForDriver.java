@@ -17,8 +17,8 @@ public class RedisServiceForDriver {
     public void AddOnlineDriver(Driver driver){
         String Key = "Active-driver:"+Integer.toString(driver.getId());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"driver",Integer.toString(driver.getId()));
-//        redisTemplateForOnlineDriver.opsForHash().put(Key,"latitude",latitude);
-//        redisTemplateForOnlineDriver.opsForHash().put(Key,"longitude",longitude);
+        redisTemplateForOnlineDriver.opsForHash().put(Key,"latitude","");
+        redisTemplateForOnlineDriver.opsForHash().put(Key,"longitude","");
         redisTemplateForOnlineDriver.opsForHash().put(Key,"phoneNo",driver.getPhoneNumber());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"isOnline",driver.getIsOnline());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"isOnRide",driver.getIsOnRide());
