@@ -26,7 +26,8 @@ public class SpringSecurity {
                  csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(
                         request->request
-                                .requestMatchers("/Rider/create_user","/Rider/verify/**","/Driver/create","/Driver/verify/**","/ws/**").permitAll()
+                                .requestMatchers("/Rider/create_user","/Rider/verify/**","/Driver/create","/Driver/verify/**","/ws/**",
+                                        "/get/autocomplete/**","/get/src_dest/direction").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
@@ -34,6 +35,7 @@ public class SpringSecurity {
                 .build();
 
     }
+    //in security allowing many url without access just for checking
     //ignoring the websocket
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {

@@ -6,6 +6,10 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 public class RedisTripSession {
+    private String source;
+    private String destination;
+    private String geometry;
+    private Double duration;
+    private Double distance;
     private Integer riderId;
-    private Integer driverId;
 }
