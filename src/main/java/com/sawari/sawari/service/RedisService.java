@@ -2,14 +2,14 @@ package com.sawari.sawari.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sawari.sawari.pojo.AutocompleteLocation;
-import com.sawari.sawari.pojo.DirectionResponse;
+import com.sawari.sawari.dto.AutocompleteLocation;
+import com.sawari.sawari.dto.DirectionResponse;
 import com.sawari.sawari.support.EnumValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import com.sawari.sawari.pojo.Geocode;
+import com.sawari.sawari.dto.Geocode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

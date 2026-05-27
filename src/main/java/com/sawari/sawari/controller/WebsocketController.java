@@ -1,6 +1,6 @@
 package com.sawari.sawari.controller;
 
-import com.sawari.sawari.pojo.RedisTripSession;
+import com.sawari.sawari.dto.RedisTripSession;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,7 @@ public class WebsocketController {
     @SendTo("/topic/tripStatus")
     public RedisTripSession sendTripMessage(RedisTripSession redisTripSession)
     {
-        System.out.println("sendTripMessage");
+        System.out.println("got it..." + redisTripSession);
         return redisTripSession;
     }
 }

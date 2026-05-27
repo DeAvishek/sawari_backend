@@ -1,5 +1,5 @@
 package com.sawari.sawari.ForDriver.controller;
-import com.sawari.sawari.pojo.Location;
+import com.sawari.sawari.dto.Location;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;

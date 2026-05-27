@@ -1,7 +1,7 @@
 package com.sawari.sawari.controller;
-import com.sawari.sawari.pojo.AutocompleteLocation;
-import com.sawari.sawari.pojo.DirectionResponse;
-import com.sawari.sawari.pojo.SourceDestinationLatAndLong;
+import com.sawari.sawari.dto.AutocompleteLocation;
+import com.sawari.sawari.dto.DirectionResponse;
+import com.sawari.sawari.dto.SourceDestinationLatAndLong;
 import com.sawari.sawari.service.GetDirectionsLIq;
 import com.sawari.sawari.service.GetLatLong;
 import com.sawari.sawari.service.GetSuggestionServiceForLocation;

@@ -1,7 +1,8 @@
 package com.sawari.sawari.config;
 
-import com.sawari.sawari.pojo.DirectionResponse;
-import com.sawari.sawari.pojo.Geocode;
+import com.sawari.sawari.dto.DirectionResponse;
+import com.sawari.sawari.dto.Geocode;
+import com.sawari.sawari.dto.OtpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -31,6 +32,7 @@ public class RedisConfig {
         return redisTemplate;
     }
     //
+    @Bean
     public RedisTemplate<String,String> redisTemplate3ForAutocomplete(RedisConnectionFactory redisConnectionFactory){
         RedisTemplate<String,String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -52,5 +54,14 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-
+    //redis config for Otp session
+    @Bean
+    public  RedisTemplate<String, OtpSession>redisTemplateForOtpSession(RedisConnectionFactory redisConnectionFactory){
+        RedisTemplate<String, OtpSession> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new JacksonJsonRedisSerializer<>(OtpSession.class));
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
 }

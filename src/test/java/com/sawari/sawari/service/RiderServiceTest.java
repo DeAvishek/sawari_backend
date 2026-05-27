@@ -2,7 +2,7 @@ package com.sawari.sawari.service;
 
 import com.sawari.sawari.Repository.RiderRepository;
 import com.sawari.sawari.entity.Rider;
-import com.sawari.sawari.pojo.OtpPojo;
+import com.sawari.sawari.dto.OtpPojo;
 import com.sawari.sawari.utiils.JwtUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

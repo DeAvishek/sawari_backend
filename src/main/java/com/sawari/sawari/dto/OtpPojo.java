@@ -1,4 +1,4 @@
-package com.sawari.sawari.pojo;
+package com.sawari.sawari.dto;
 
 
 import lombok.*;
@@ -9,6 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OtpPojo {
-
     private String otp;
 }

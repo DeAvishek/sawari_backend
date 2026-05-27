@@ -1,4 +1,4 @@
-package com.sawari.sawari.pojo;
+package com.sawari.sawari.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

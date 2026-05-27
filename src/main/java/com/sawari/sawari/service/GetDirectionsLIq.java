@@ -1,8 +1,8 @@
 package com.sawari.sawari.service;
 
 import com.sawari.sawari.helper.StringFormatter;
-import com.sawari.sawari.pojo.DirectionResponse;
-import com.sawari.sawari.pojo.SourceDestinationLatAndLong;
+import com.sawari.sawari.dto.DirectionResponse;
+import com.sawari.sawari.dto.SourceDestinationLatAndLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

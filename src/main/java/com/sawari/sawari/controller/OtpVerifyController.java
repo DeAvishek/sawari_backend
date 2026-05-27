@@ -1,6 +1,6 @@
 package com.sawari.sawari.controller;
 
-import com.sawari.sawari.pojo.OtpPojo;
+import com.sawari.sawari.dto.OtpPojo;
 import com.sawari.sawari.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

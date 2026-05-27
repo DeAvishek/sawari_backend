@@ -2,8 +2,8 @@ package com.sawari.sawari.service;
 
 import com.sawari.sawari.Repository.RiderRepository;
 import com.sawari.sawari.entity.Rider;
-import com.sawari.sawari.pojo.OtpPojo;
-import com.sawari.sawari.pojo.PhoneNumber;
+import com.sawari.sawari.dto.OtpPojo;
+import com.sawari.sawari.dto.PhoneNumber;
 import com.sawari.sawari.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
