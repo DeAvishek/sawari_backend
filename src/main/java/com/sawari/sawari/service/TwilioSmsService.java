@@ -20,8 +20,6 @@ public class TwilioSmsService {
 
     @PostConstruct
     public void init(){
-        System.out.println("SID=" + TwilioAccSid);
-        System.out.println("TOKEN=" + TwilioAccToken);
         Twilio.init(TwilioAccSid, TwilioAccToken);
     }
 

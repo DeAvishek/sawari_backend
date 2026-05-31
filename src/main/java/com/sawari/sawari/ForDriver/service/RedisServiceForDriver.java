@@ -1,12 +1,15 @@
 package com.sawari.sawari.ForDriver.service;
 
 import com.sawari.sawari.ForDriver.entity.Driver;
+import com.sawari.sawari.dto.OtpSession;
+import com.sawari.sawari.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -14,6 +17,8 @@ public class RedisServiceForDriver {
     @Autowired
     public RedisTemplate<String,Object> redisTemplateForOnlineDriver;
 
+    @Autowired
+    public RedisTemplate<String, OtpSession> redisTemplateForOtpSession;
     public void AddOnlineDriver(Driver driver){
         String Key = "Active-driver:"+Integer.toString(driver.getId());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"driver",Integer.toString(driver.getId()));
@@ -24,5 +29,26 @@ public class RedisServiceForDriver {
         redisTemplateForOnlineDriver.opsForHash().put(Key,"isOnRide",driver.getIsOnRide());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"updatedAt", LocalDateTime.now().toString());
         log.info("Successfully Added online Driver😍");
+    }
+
+    public void AddOtpSession(OtpSession otpSession){
+        String key = "phone:"+otpSession.getPhoneNumber();
+        redisTemplateForOtpSession.opsForValue().set(key,otpSession,5, TimeUnit.MINUTES);
+        log.info("Otp session has been successfully added to cache with ttl 5 😍");
+    }
+    //verify for otp in redis
+    public boolean checkOtpInRedis(String phoneNumber,String Otp){
+        String key = "phone:"+phoneNumber;
+        try{
+            OtpSession isExisted =  redisTemplateForOtpSession.opsForValue().get(key);
+            if(isExisted!=null){
+                log.info("***user verified in redis **** at"+LocalDateTime.now());
+                return isExisted.getPhoneNumber().equals(phoneNumber)&&isExisted.getOtp().equals(Otp);
+            }
+            log.warn("***otp expires***");
+            return false;
+        }catch(Exception e){
+            return false;
+        }
     }
 }

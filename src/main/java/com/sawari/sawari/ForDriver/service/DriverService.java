@@ -2,6 +2,7 @@ package com.sawari.sawari.ForDriver.service;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.repository.DriverRepository;
 import com.sawari.sawari.dto.OtpPojo;
+import com.sawari.sawari.dto.OtpSession;
 import com.sawari.sawari.dto.PhoneNumber;
 import com.sawari.sawari.service.OtpGeneratorAndSenderService;
 import com.sawari.sawari.utiils.JwtUtil;
@@ -26,48 +27,33 @@ public class DriverService {
     private RedisServiceForDriver redisServiceForDriver;
     @Autowired
     private RedisTemplate<String,Object> redisTemplateForOnlineDriver;
-    public void saveDriver(Driver requestBody){
+    public Driver saveDriver(Driver requestBody){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
-        requestBody.setOtp(otpGeneratorAndSenderService.GenerateOtp()); //random hardcoded
-        requestBody.setIsOnline(false);
-        requestBody.setIsOnRide(false);
-        requestBody.setIsVerified(false);
-        requestBody.setOtpExpiredAt(LocalDateTime.now().plusMinutes(5)); //set otp expired at
-        driverRepository.save(requestBody);
+        return driverRepository.save(requestBody);
     }
-    public String VerifyOtp(OtpPojo requestBody,Integer driverId){
+    public String VerifyOtp(OtpPojo requestBody,String phoneNumber){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
-        Driver existedDriver = driverRepository.findById(driverId).orElseThrow(()->new RuntimeException("Driver not found"));
-        if(existedDriver.getIsVerified()){
-            throw new RuntimeException("⚠ Driver is already verified");
+        //first have to check in redis is existed or not
+        boolean isVerfied = redisServiceForDriver.checkOtpInRedis(phoneNumber,requestBody.getOtp());
+        if(!isVerfied){
+            throw new RuntimeException("Invalid Request");
         }
-        if(LocalDateTime.now().isAfter(existedDriver.getOtpExpiredAt())){
-            throw new RuntimeException("Otp has expired⌛");
+        //then check if it is exited in db or not
+        Driver existedDriver = driverRepository.findDriverByPhoneNumber(phoneNumber);
+        if(existedDriver==null){
+            //ask for username and create the user and then make a jwt
+            return "";
         }
-        if(!existedDriver.getOtp().equals(requestBody.getOtp())){
-            throw new RuntimeException("❌ Invalid OTP! please try again later");
-        }
-        //if everything okay then navigate to next phase
-        existedDriver.setIsVerified(true);
-        existedDriver.setIsOnline(true);
-        existedDriver.setOtp("");
-        driverRepository.save(existedDriver);
+        //user all ready exited in db return its ifo with jwt
+        return existedDriver.getId()+"#"+existedDriver.getUserName()+"#"+jwtUtil.GenerateJwtToken(existedDriver.getUserName());
 
-        updateinRedis(existedDriver); //after Successfull verification put the Rider to redis
-        return jwtUtil.GenerateJwtToken(existedDriver.getName());
-    }
-    public Driver loginService(PhoneNumber phNo){
-        if(phNo==null) throw new RuntimeException("Invalid Request");
-        Driver existedDriver = driverRepository.findDriverByPhoneNumber(String.valueOf(phNo.getNumber()));
-        if(existedDriver==null) throw new RuntimeException("Driver not found");
-        if(existedDriver.getIsVerified()) throw new RuntimeException("Driver is already verified");
-        existedDriver.setOtp(otpGeneratorAndSenderService.GenerateOtp());
-        driverRepository.save(existedDriver);
-        return existedDriver;
+
     }
     public void updateinRedis(Driver existedDriver){
         redisServiceForDriver.AddOnlineDriver(existedDriver);
     }
+
+
     @Scheduled(fixedRate = 60000)
     public void cleanOfflineDriversFromRedis(){
         Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active-driver:*");
@@ -82,5 +68,21 @@ public class DriverService {
             };
             log.info("Removed inactive driver {}", Key);
         }
+    }
+    //login service base on otp session
+    public OtpSession loginService(PhoneNumber phNo){
+        if(phNo==null) throw new RuntimeException("Invalid Request");
+        //generate and send otp
+//        String otp = otpGeneratorAndSenderService.GenerateOtp();
+        String phoneNumber = phNo.getPhoneNumber();
+        OtpSession session = new OtpSession();
+        session.setPhoneNumber(phoneNumber);
+        session.setOtp("123456");
+//        otpGeneratorAndSenderService.SendOtp(phoneNumber,"123456");
+        //end
+        redisServiceForDriver.AddOtpSession(session); //add to redis with ttl
+        System.out.println("Phonenumber" + phoneNumber +" "+"and otp" +123456); //todo to remove
+        return session;
+
     }
 }

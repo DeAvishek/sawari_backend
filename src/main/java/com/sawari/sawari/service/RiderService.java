@@ -66,7 +66,7 @@ public class RiderService {
     //login service for rider
     public Rider loginService(PhoneNumber phNo){
         if(phNo==null) throw new RuntimeException("phone number is null");
-        Rider existedRider = riderRepository.findRiderByPhoneNumber(String .valueOf(phNo.getNumber()));
+        Rider existedRider = riderRepository.findRiderByPhoneNumber(String .valueOf(phNo.getPhoneNumber()));
         if(existedRider==null){
             throw new RuntimeException("Rider not found");
         }

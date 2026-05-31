@@ -32,7 +32,7 @@ public class RedisConfig {
         return redisTemplate;
     }
     //
-    @Bean
+//    @Bean
     public RedisTemplate<String,String> redisTemplate3ForAutocomplete(RedisConnectionFactory redisConnectionFactory){
         RedisTemplate<String,String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);

@@ -2,6 +2,7 @@ package com.sawari.sawari.ForDriver.controller;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.service.DriverService;
 import com.sawari.sawari.dto.OtpPojo;
+import com.sawari.sawari.dto.OtpSession;
 import com.sawari.sawari.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +22,26 @@ public class DriverController {
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody Driver driver){
         try{
-            driverService.saveDriver(driver);
-            return new ResponseEntity<>(driver, HttpStatus.CREATED);
+            Driver savedDriver = driverService.saveDriver(driver);
+            return new ResponseEntity<>(savedDriver, HttpStatus.CREATED);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/verify/{driverId}")
-    public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo, @PathVariable Integer driverId){
+    @PostMapping("/verify/{phNumber}")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo, @PathVariable String phNumber){
         try {
             HashMap<String,String>result=new HashMap<>();
-            String token = driverService.VerifyOtp(otpPojo,driverId);
-            result.put("Bearer",token);
+            String response = driverService.VerifyOtp(otpPojo,phNumber);
+            if(response.equals("")){
+                result.put("Bearer",response);
+                return new ResponseEntity<>(result, HttpStatus.CREATED);
+            }
+            String[]info = response.split("#");
+            result.put("userId",info[0]);
+            result.put("userName",info[1]);
+            result.put("Bearer",info[2]);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -42,8 +50,9 @@ public class DriverController {
     @PostMapping("/login")
     public ResponseEntity<?> LoginValidDriver(@RequestBody PhoneNumber phNo){
         try{
-            Driver existedDriver = driverService.loginService(phNo);
-            return new ResponseEntity<>(existedDriver, HttpStatus.OK);
+             System.out.println(phNo);
+             OtpSession session = driverService.loginService(phNo);
+             return new ResponseEntity<>(session, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

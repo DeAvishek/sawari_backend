@@ -8,5 +8,5 @@ import lombok.*;
 @Getter
 @Setter
 public class PhoneNumber {
-    private String number;
+    private String phoneNumber;
 }
