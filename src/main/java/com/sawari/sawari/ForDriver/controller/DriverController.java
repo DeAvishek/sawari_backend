@@ -22,8 +22,14 @@ public class DriverController {
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody Driver driver){
         try{
-            Driver savedDriver = driverService.saveDriver(driver);
-            return new ResponseEntity<>(savedDriver, HttpStatus.CREATED);
+            String response = driverService.saveDriver(driver);
+            // only create the driver when is not existed so should return a bearer --->right
+            HashMap<String,String> result = new HashMap<>();
+            String[]info = response.split("#");
+            result.put("userId",info[0]);
+            result.put("userName",info[1]);
+            result.put("Bearer",info[2]);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }catch (Exception e){
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -27,9 +27,11 @@ public class DriverService {
     private RedisServiceForDriver redisServiceForDriver;
     @Autowired
     private RedisTemplate<String,Object> redisTemplateForOnlineDriver;
-    public Driver saveDriver(Driver requestBody){
+    public String saveDriver(Driver requestBody){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
-        return driverRepository.save(requestBody);
+        Driver savedDriver = driverRepository.save(requestBody);
+        return savedDriver.getId()+"#"+savedDriver.getUserName()+"#"+jwtUtil.GenerateJwtToken(savedDriver.getUserName());
+        //return the bearer with username for  logg in user
     }
     public String VerifyOtp(OtpPojo requestBody,String phoneNumber){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
@@ -46,8 +48,6 @@ public class DriverService {
         }
         //user all ready exited in db return its ifo with jwt
         return existedDriver.getId()+"#"+existedDriver.getUserName()+"#"+jwtUtil.GenerateJwtToken(existedDriver.getUserName());
-
-
     }
     public void updateinRedis(Driver existedDriver){
         redisServiceForDriver.AddOnlineDriver(existedDriver);
