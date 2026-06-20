@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -30,8 +31,11 @@ public class DriverService {
     public String saveDriver(Driver requestBody){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
         Driver savedDriver = driverRepository.save(requestBody);
-        return savedDriver.getId()+"#"+savedDriver.getUserName()+"#"+jwtUtil.GenerateJwtToken(savedDriver.getUserName());
-        //return the bearer with username for  logg in user
+        return savedDriver.getId()+"#"+
+                savedDriver.getUserName()+"#"+
+                jwtUtil.GenerateJwtToken(savedDriver.getUserName())+"#"+
+                redisServiceForDriver.setRefreshToken(savedDriver);
+                //return the bearer , refresh-token with username for  logg in user
     }
     public String VerifyOtp(OtpPojo requestBody,String phoneNumber){
         if(requestBody==null) throw new RuntimeException("Invalid Request");
@@ -46,8 +50,11 @@ public class DriverService {
             //ask for username and create the user and then make a jwt
             return "";
         }
-        //user all ready exited in db return its ifo with jwt
-        return existedDriver.getId()+"#"+existedDriver.getUserName()+"#"+jwtUtil.GenerateJwtToken(existedDriver.getUserName());
+        //user all ready exited in db return its ifo with jwt and refresh-token
+        return existedDriver.getId()+"#"+
+                existedDriver.getUserName()+"#"+
+                jwtUtil.GenerateJwtToken(existedDriver.getUserName())+"#"+
+                redisServiceForDriver.setRefreshToken(existedDriver);
     }
     public void updateinRedis(Driver existedDriver){
         redisServiceForDriver.AddOnlineDriver(existedDriver);
@@ -83,6 +90,22 @@ public class DriverService {
         redisServiceForDriver.AddOtpSession(session); //add to redis with ttl
         System.out.println("Phonenumber" + phoneNumber +" "+"and otp" +123456); //todo to remove
         return session;
+    }
 
+    public String refreshTokenService(String token){
+        int id = redisServiceForDriver.verifyRefreshToken(token);
+        if(0==id){
+            throw new RuntimeException("Invalid Refresh-token");
+        }
+        Driver driver = driverRepository
+                        .findById(id)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Driver not found"
+                                )
+                        );
+        redisServiceForDriver.deleteRefreshToken(token);//delete the refresh token
+        String ref_token = redisServiceForDriver.setRefreshToken(driver);//create new refresh token
+        return ref_token+"#"+jwtUtil.GenerateJwtToken(driver.getUserName()); //return both tokens
     }
 }

@@ -2,13 +2,14 @@ package com.sawari.sawari.ForDriver.service;
 
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.dto.OtpSession;
-import com.sawari.sawari.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -19,6 +20,31 @@ public class RedisServiceForDriver {
 
     @Autowired
     public RedisTemplate<String, OtpSession> redisTemplateForOtpSession;
+
+    @Autowired
+    public RedisTemplate<String,String> redisTemplateForRefreshToken;
+
+    @Value("${spring.app.jwtRefreshExpirationMs}")
+    private Long Expiry;
+
+    public String setRefreshToken(Driver driver){
+        String token = UUID.randomUUID().toString();
+        redisTemplateForRefreshToken.opsForValue().set(token,driver.getId().toString(),Expiry,TimeUnit.MILLISECONDS);
+        log.info("Refresh token has been set to {}",token);
+        return token;
+    }
+    public int verifyRefreshToken(String token){
+        String driverId = redisTemplateForRefreshToken.opsForValue().get(token);
+        if(driverId==null) return 0;
+        log.info("Refresh token has been verified in {}",driverId);
+        return Integer.parseInt(driverId);
+    }
+
+    public void deleteRefreshToken(String token){
+        log.info("Refresh token has been deleted in {}",token);
+        redisTemplateForRefreshToken.delete(token);
+    }
+
     public void AddOnlineDriver(Driver driver){
         String Key = "Active-driver:"+Integer.toString(driver.getId());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"driver",Integer.toString(driver.getId()));

@@ -29,6 +29,7 @@ public class DriverController {
             result.put("userId",info[0]);
             result.put("userName",info[1]);
             result.put("Bearer",info[2]);
+            result.put("RefreshToken",info[3]);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -48,6 +49,7 @@ public class DriverController {
             result.put("userId",info[0]);
             result.put("userName",info[1]);
             result.put("Bearer",info[2]);
+            result.put("RefreshToken",info[3]);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -62,6 +64,22 @@ public class DriverController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/refresh-token/{refreshToken}")
+    public ResponseEntity<?> refreshToken(@PathVariable String refreshToken){
+        HashMap<String,String> response=new HashMap<>();
+        try{
+            String result = driverService.refreshTokenService(refreshToken);
+            String []info=result.split("#");
+            response.put("RefreshToken",info[0]);
+            response.put("Bearer",info[1]);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            response.put("Bearer",e.getMessage());
+            log.error(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 

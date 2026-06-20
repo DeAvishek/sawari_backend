@@ -20,6 +20,9 @@ public class JwtUtil {
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
+    @Value("${spring.app.jwtExpirationMs}")
+    private int jwtExpirationMs;
+
     public String GenerateJwtToken(String userName){
         Map<String,Object>claims=new HashMap<String,Object>();
         return CreateToken(claims,userName);
@@ -30,7 +33,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60*30))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(GetSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
