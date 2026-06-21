@@ -1,7 +1,7 @@
 package com.sawari.sawari.ForDriver.service;
 
 import com.sawari.sawari.ForDriver.entity.Driver;
-import com.sawari.sawari.dto.OtpSession;
+import com.sawari.sawari.common.dto.OtpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

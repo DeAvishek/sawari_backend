@@ -1,9 +1,9 @@
 package com.sawari.sawari.ForDriver.controller;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.service.DriverService;
-import com.sawari.sawari.dto.OtpPojo;
-import com.sawari.sawari.dto.OtpSession;
-import com.sawari.sawari.dto.PhoneNumber;
+import com.sawari.sawari.common.dto.OtpPojo;
+import com.sawari.sawari.common.dto.OtpSession;
+import com.sawari.sawari.common.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

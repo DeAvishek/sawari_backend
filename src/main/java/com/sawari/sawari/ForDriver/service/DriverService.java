@@ -1,18 +1,17 @@
 package com.sawari.sawari.ForDriver.service;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.repository.DriverRepository;
-import com.sawari.sawari.dto.OtpPojo;
-import com.sawari.sawari.dto.OtpSession;
-import com.sawari.sawari.dto.PhoneNumber;
-import com.sawari.sawari.service.OtpGeneratorAndSenderService;
-import com.sawari.sawari.utiils.JwtUtil;
+import com.sawari.sawari.common.dto.OtpPojo;
+import com.sawari.sawari.common.dto.OtpSession;
+import com.sawari.sawari.common.dto.PhoneNumber;
+import com.sawari.sawari.forRider.service.OtpGeneratorAndSenderService;
+import com.sawari.sawari.common.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
