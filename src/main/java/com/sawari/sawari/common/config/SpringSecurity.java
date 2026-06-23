@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//this permit all paths are for texting
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
@@ -26,7 +27,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests(
                         request->request
                                 .requestMatchers("/Rider/create_user","/Rider/verify/**","/Driver/create","/Driver/verify/**","/ws/**",
-                                        "/get/autocomplete/**","/get/src_dest/direction","/Driver/login").permitAll()
+                                        "/get/autocomplete/**","/get/src_dest/direction","/Driver/login","/Driver/refresh-token/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)

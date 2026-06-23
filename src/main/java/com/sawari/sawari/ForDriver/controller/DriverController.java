@@ -68,7 +68,8 @@ public class DriverController {
     }
 
     @GetMapping("/refresh-token/{refreshToken}")
-    public ResponseEntity<?> refreshToken(@PathVariable String refreshToken){
+    public ResponseEntity<?> refreshTokenGet(@PathVariable String refreshToken){
+        log.info("Request route to refresh token Api with token "+refreshToken );
         HashMap<String,String> response=new HashMap<>();
         try{
             String result = driverService.refreshTokenService(refreshToken);
