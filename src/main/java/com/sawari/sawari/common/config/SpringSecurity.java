@@ -1,7 +1,7 @@
 package com.sawari.sawari.common.config;
 
 import com.sawari.sawari.common.filter.JwtAuthFilter;
-import com.sawari.sawari.forRider.service.UserDetailsMpl;
+import com.sawari.sawari.forRider.service.genral.UserDetailsMpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

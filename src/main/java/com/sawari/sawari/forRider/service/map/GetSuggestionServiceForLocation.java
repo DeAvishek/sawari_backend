@@ -1,6 +1,7 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.map;
 
 import com.sawari.sawari.common.dto.AutocompleteLocation;
+import com.sawari.sawari.forRider.service.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

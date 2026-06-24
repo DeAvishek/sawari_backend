@@ -3,7 +3,7 @@ package com.sawari.sawari.common.config;
 import com.sawari.sawari.common.dto.DirectionResponse;
 import com.sawari.sawari.common.dto.Geocode;
 import com.sawari.sawari.common.dto.OtpSession;
-import com.sawari.sawari.forRider.service.RedisRideRequestSubscriber;
+import com.sawari.sawari.forRider.service.redis.RedisRideRequestSubscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

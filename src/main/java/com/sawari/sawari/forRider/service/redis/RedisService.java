@@ -1,4 +1,4 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

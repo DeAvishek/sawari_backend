@@ -1,10 +1,11 @@
-package com.sawari.sawari.ForDriver.service;
+package com.sawari.sawari.ForDriver.service.general;
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.ForDriver.repository.DriverRepository;
+import com.sawari.sawari.ForDriver.service.redis.RedisServiceForDriver;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.dto.PhoneNumber;
-import com.sawari.sawari.forRider.service.OtpGeneratorAndSenderService;
+import com.sawari.sawari.forRider.service.twillio.OtpGeneratorAndSenderService;
 import com.sawari.sawari.common.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,11 +1,14 @@
 package com.sawari.sawari.ForDriver.controller;
 import com.sawari.sawari.ForDriver.entity.Driver;
-import com.sawari.sawari.ForDriver.service.DriverService;
+import com.sawari.sawari.ForDriver.service.general.DriverService;
+import com.sawari.sawari.ForDriver.service.rateLimiter.RateLimiterService;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.dto.PhoneNumber;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,9 @@ import java.util.HashMap;
 public class DriverController {
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private RateLimiterService rateLimiterService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody Driver driver){
@@ -58,6 +64,9 @@ public class DriverController {
     @PostMapping("/login")
     public ResponseEntity<?> LoginValidDriver(@RequestBody PhoneNumber phNo){
         try{
+            if(!rateLimiterService.isRequestInsideThresholdForAuth()){
+                return  new ResponseEntity<>("to many request",HttpStatus.TOO_MANY_REQUESTS);
+            }
              System.out.println(phNo);
              OtpSession session = driverService.loginService(phNo);
              return new ResponseEntity<>(session, HttpStatus.OK);

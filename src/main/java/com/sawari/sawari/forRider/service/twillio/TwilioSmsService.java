@@ -1,4 +1,4 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.twillio;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;

@@ -1,4 +1,4 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.genral;
 
 import com.sawari.sawari.forRider.Repository.RiderRepository;
 import com.sawari.sawari.forRider.entity.Rider;

@@ -1,4 +1,4 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

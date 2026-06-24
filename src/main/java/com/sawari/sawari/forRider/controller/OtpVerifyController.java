@@ -1,7 +1,7 @@
 package com.sawari.sawari.forRider.controller;
 
 import com.sawari.sawari.common.dto.OtpPojo;
-import com.sawari.sawari.forRider.service.RiderService;
+import com.sawari.sawari.forRider.service.genral.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

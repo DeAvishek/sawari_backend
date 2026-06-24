@@ -1,10 +1,11 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.genral;
 
 import com.sawari.sawari.forRider.Repository.RiderRepository;
 import com.sawari.sawari.forRider.entity.Rider;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.PhoneNumber;
 import com.sawari.sawari.common.utiils.JwtUtil;
+import com.sawari.sawari.forRider.service.twillio.OtpGeneratorAndSenderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

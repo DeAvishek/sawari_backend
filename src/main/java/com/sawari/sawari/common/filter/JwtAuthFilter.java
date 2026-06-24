@@ -1,6 +1,6 @@
 package com.sawari.sawari.common.filter;
 
-import com.sawari.sawari.forRider.service.UserDetailsMpl;
+import com.sawari.sawari.forRider.service.genral.UserDetailsMpl;
 import com.sawari.sawari.common.utiils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

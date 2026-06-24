@@ -1,4 +1,4 @@
-package com.sawari.sawari.forRider.service;
+package com.sawari.sawari.forRider.service.redis;
 
 import org.springframework.stereotype.Service;
 

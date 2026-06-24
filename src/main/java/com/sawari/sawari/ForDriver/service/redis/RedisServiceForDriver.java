@@ -1,4 +1,4 @@
-package com.sawari.sawari.ForDriver.service;
+package com.sawari.sawari.ForDriver.service.redis;
 
 import com.sawari.sawari.ForDriver.entity.Driver;
 import com.sawari.sawari.common.dto.OtpSession;
