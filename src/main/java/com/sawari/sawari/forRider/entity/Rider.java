@@ -12,7 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "User")
+@Table(name = "Rider")
 public class Rider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,17 +27,10 @@ public class Rider {
 
     private String role;
 
-    @Column(length = 6)
-    private String otp;
-
-
     private Boolean isVerified;
 
     @CreationTimestamp
     private LocalDateTime createdDate;
-
-    @Column(nullable = false)
-    private LocalDateTime otpExpiredAt;
 
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     private List<TripRecord> trips;

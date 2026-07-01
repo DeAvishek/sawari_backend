@@ -3,7 +3,7 @@ package com.sawari.sawari.forRider.service.map;
 import com.sawari.sawari.common.helper.StringFormatter;
 import com.sawari.sawari.common.dto.DirectionResponse;
 import com.sawari.sawari.common.dto.SourceDestinationLatAndLong;
-import com.sawari.sawari.forRider.service.redis.RedisService;
+import com.sawari.sawari.forRider.service.redis.RedisServiceForRider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class GetDirectionsLIq {
     @Autowired
     private StringFormatter stringFormatter;
     @Autowired
-    private RedisService redisService;
+    private RedisServiceForRider redisService;
     @Autowired
     private RestTemplate restTemplate;
     private static final String Url = "https://us1.locationiq.com/v1/directions/";

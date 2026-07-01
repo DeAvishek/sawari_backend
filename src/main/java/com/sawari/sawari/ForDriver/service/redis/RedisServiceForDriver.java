@@ -27,24 +27,6 @@ public class RedisServiceForDriver {
     @Value("${spring.app.jwtRefreshExpirationMs}")
     private Long Expiry;
 
-    public String setRefreshToken(Driver driver){
-        String token = UUID.randomUUID().toString();
-        redisTemplateForRefreshToken.opsForValue().set(token,driver.getId().toString(),Expiry,TimeUnit.MILLISECONDS);
-        log.info("Refresh token has been set to {}",token);
-        return token;
-    }
-    public int verifyRefreshToken(String token){
-        String driverId = redisTemplateForRefreshToken.opsForValue().get(token);
-        if(driverId==null) return 0;
-        log.info("Refresh token has been verified in {}",driverId);
-        return Integer.parseInt(driverId);
-    }
-
-    public void deleteRefreshToken(String token){
-        log.info("Refresh token has been deleted in {}",token);
-        redisTemplateForRefreshToken.delete(token);
-    }
-
     public void AddOnlineDriver(Driver driver){
         String Key = "Active-driver:"+Integer.toString(driver.getId());
         redisTemplateForOnlineDriver.opsForHash().put(Key,"driver",Integer.toString(driver.getId()));
@@ -56,25 +38,5 @@ public class RedisServiceForDriver {
         redisTemplateForOnlineDriver.opsForHash().put(Key,"updatedAt", LocalDateTime.now().toString());
         log.info("Successfully Added online Driver😍");
     }
-
-    public void AddOtpSession(OtpSession otpSession){
-        String key = "phone:"+otpSession.getPhoneNumber();
-        redisTemplateForOtpSession.opsForValue().set(key,otpSession,5, TimeUnit.MINUTES);
-        log.info("Otp session has been successfully added to cache with ttl 5 😍");
-    }
-    //verify for otp in redis
-    public boolean checkOtpInRedis(String phoneNumber,String Otp){
-        String key = "phone:"+phoneNumber;
-        try{
-            OtpSession isExisted =  redisTemplateForOtpSession.opsForValue().get(key);
-            if(isExisted!=null){
-                log.info("***user verified in redis **** at"+LocalDateTime.now());
-                return isExisted.getPhoneNumber().equals(phoneNumber)&&isExisted.getOtp().equals(Otp);
-            }
-            log.warn("***otp expires***");
-            return false;
-        }catch(Exception e){
-            return false;
-        }
-    }
+    //--->end
 }

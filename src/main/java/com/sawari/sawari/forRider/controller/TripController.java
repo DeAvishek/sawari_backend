@@ -1,7 +1,7 @@
 package com.sawari.sawari.forRider.controller;
 
 import com.sawari.sawari.forRider.entity.TripRecord;
-import com.sawari.sawari.forRider.service.redis.RedisService;
+import com.sawari.sawari.forRider.service.redis.RedisServiceForRider;
 import com.sawari.sawari.forRider.service.genral.TripService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class TripController {
     @Autowired
     private TripService tripService;
     @Autowired
-    private RedisService redisService;
+    private RedisServiceForRider redisService;
     @PostMapping("/create_trip_for/{RiderId}")
     public ResponseEntity<?> createRide(@PathVariable Integer RiderId, @RequestBody TripRecord tripRecord){
         try {

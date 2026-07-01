@@ -1,6 +1,6 @@
 package com.sawari.sawari.forRider.service.map;
 import com.sawari.sawari.common.dto.Geocode;
-import com.sawari.sawari.forRider.service.redis.RedisService;
+import com.sawari.sawari.forRider.service.redis.RedisServiceForRider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GetLatLong {
     @Autowired
-    private RedisService redisService;
+    private RedisServiceForRider redisService;
     @Value("${LocationIq.account.api}")
     private String LocationIQApiKey; //need to set the Api key in env
     private static final String Url = "https://us1.locationiq.com/v1/";

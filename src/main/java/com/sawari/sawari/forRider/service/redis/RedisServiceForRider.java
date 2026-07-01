@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class RedisService {
+public class RedisServiceForRider {
     @Autowired
     private RedisTemplate<String, Geocode> redisTemplateForGeocode;
 

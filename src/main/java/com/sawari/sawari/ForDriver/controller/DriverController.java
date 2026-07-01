@@ -5,10 +5,9 @@ import com.sawari.sawari.ForDriver.service.rateLimiter.RateLimiterService;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.dto.PhoneNumber;
-import io.github.resilience4j.ratelimiter.RateLimiter;
+import com.sawari.sawari.common.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +23,10 @@ public class DriverController {
 
     @Autowired
     private RateLimiterService rateLimiterService;
+
+    @Autowired
+    private CommonService commonService;
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody Driver driver){
@@ -46,7 +49,7 @@ public class DriverController {
     public ResponseEntity<?> verifyOtp(@RequestBody OtpPojo otpPojo, @PathVariable String phNumber){
         try {
             HashMap<String,String>result=new HashMap<>();
-            String response = driverService.VerifyOtp(otpPojo,phNumber);
+            String response = commonService.VerifyOtpForDriver(otpPojo,phNumber);
             if(response.equals("")){
                 result.put("Bearer",response);
                 return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -68,7 +71,7 @@ public class DriverController {
                 return  new ResponseEntity<>("to many request",HttpStatus.TOO_MANY_REQUESTS);
             }
              System.out.println(phNo);
-             OtpSession session = driverService.loginService(phNo);
+             OtpSession session = commonService.loginService(phNo);
              return new ResponseEntity<>(session, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -81,7 +84,7 @@ public class DriverController {
         log.info("Request route to refresh token Api with token "+refreshToken );
         HashMap<String,String> response=new HashMap<>();
         try{
-            String result = driverService.refreshTokenService(refreshToken);
+            String result = commonService.refreshTokenServiceForDriver(refreshToken);
             String []info=result.split("#");
             response.put("RefreshToken",info[0]);
             response.put("Bearer",info[1]);

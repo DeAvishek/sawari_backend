@@ -1,7 +1,7 @@
 package com.sawari.sawari.forRider.service.map;
 
 import com.sawari.sawari.common.dto.AutocompleteLocation;
-import com.sawari.sawari.forRider.service.redis.RedisService;
+import com.sawari.sawari.forRider.service.redis.RedisServiceForRider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GetSuggestionServiceForLocation {
     @Autowired
-    private RedisService redisService;
+    private RedisServiceForRider redisService;
     @Autowired
     private RestTemplate restTemplate;
     @Value("${LocationIq.account.api}")
