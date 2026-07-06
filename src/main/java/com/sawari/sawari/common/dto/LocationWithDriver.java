@@ -7,7 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Location {
+public class LocationWithDriver {
     private Double latitude;
     private Double longitude;
+    private String userId;
 }

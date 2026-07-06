@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Set;
 
 @Slf4j
@@ -40,13 +41,13 @@ public class DriverService {
                 commonRedisService.setRefreshTokenForDriver(savedDriver);
                 //return the bearer , refresh-token with username for  logg in user
     }
-    public void updateinRedis(Driver existedDriver){
+    public void updateInRedis(Driver existedDriver){
         redisServiceForDriver.AddOnlineDriver(existedDriver);
     }
 
     @Scheduled(fixedRate = 60000)
     public void cleanOfflineDriversFromRedis(){
-        Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active-driver:*");
+        Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active_Driver:*");
         if(redisKeys==null || redisKeys.isEmpty()) return;
         LocalDateTime currentTime = LocalDateTime.now();
         for(String Key : redisKeys){
@@ -58,6 +59,9 @@ public class DriverService {
             };
             log.info("Removed inactive driver {}", Key);
         }
+    }
+    public HashMap<String,Integer>summaryService(String PhoneNumber){
+        return redisServiceForDriver.getTodaySummary(PhoneNumber);
     }
 
 }

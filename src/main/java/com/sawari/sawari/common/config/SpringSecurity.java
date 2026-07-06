@@ -27,7 +27,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests(
                         request->request
                                 .requestMatchers("/Rider/create","/Rider/verify/**","/Driver/create","/Driver/verify/**","/ws/**",
-                                        "/get/autocomplete/**","/get/src_dest/direction","/Driver/login","/Driver/refresh-token/**","/Rider/login").permitAll()
+                                        "/get/autocomplete/**","/get/src_dest/direction","/Driver/login","/Driver/refresh-token/**","/Rider/login","/Rider/refresh-token/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
