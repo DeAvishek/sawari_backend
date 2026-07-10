@@ -4,6 +4,7 @@ import com.sawari.sawari.ForDriver.repository.DriverRepository;
 import com.sawari.sawari.ForDriver.service.redis.RedisServiceForDriver;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.service.CommonRedisService;
+import com.sawari.sawari.common.support.EnumValues;
 import com.sawari.sawari.forRider.service.twillio.OtpGeneratorAndSenderService;
 import com.sawari.sawari.common.utiils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,7 @@
 package com.sawari.sawari.forRider.service.genral;
 
+import com.sawari.sawari.ForDriver.entity.Driver;
+import com.sawari.sawari.ForDriver.repository.DriverRepository;
 import com.sawari.sawari.forRider.Repository.RiderRepository;
 import com.sawari.sawari.forRider.entity.Rider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +17,16 @@ public class UserDetailsMpl implements UserDetailsService {
     @Autowired
     private RiderRepository riderRepository;
 
+    @Autowired
+    private DriverRepository driverRepository;
     @Override
     public UserDetails loadUserByUsername(String UserName)throws UsernameNotFoundException{
-        Rider rider = riderRepository.findRiderByUserName(UserName);
+        Driver rider = driverRepository.findDriverByUserName(UserName); //just updated to check for driver
         if(rider != null) {
             UserDetails Ud = User.builder()
                     .username(UserName)
                     .password("")
-                    .authorities("ROLE_"+rider.getRole())
+                    .authorities("ROLE_"+"Driver")
                     .build();
             return Ud;
         }

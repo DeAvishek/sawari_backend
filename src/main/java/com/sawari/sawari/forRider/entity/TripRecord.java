@@ -1,4 +1,5 @@
 package com.sawari.sawari.forRider.entity;
+import com.sawari.sawari.ForDriver.entity.Driver;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,7 +17,7 @@ public class TripRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TripId")
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false,unique = false)
     private String source;
@@ -27,20 +28,32 @@ public class TripRecord {
     @Enumerated(EnumType.STRING)
     private EnumValues.TripStatusEnum tripStatus;
 
+    @Enumerated(EnumType.STRING)
+    private EnumValues.PaymentStatusEnum paymentStatus;
+
     @Column(nullable = false)
-    private Integer cost;
+    private Integer fare;
 
     @Column(nullable = false)
     private Long distance;
 
-    @Enumerated(EnumType.STRING)
-    private EnumValues.PaymentStatusEnum paymentStatus;
+    @Column(nullable = false)
+    private Long duration;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    private LocalDateTime completedAt;
+
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId")
     private Rider rider;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DriverId")
+    private Driver driver;
+
 }
+//this is single source of truth and get touched any tip status is being changed or payment status is being changed

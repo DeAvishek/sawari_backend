@@ -1,6 +1,8 @@
 package com.sawari.sawari.ForDriver.service.redis;
 
 import com.sawari.sawari.ForDriver.entity.Driver;
+import com.sawari.sawari.ForDriver.helper.RedisKey;
+import com.sawari.sawari.common.dto.IsReadyToAcceptRide;
 import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,14 @@ public class RedisServiceForDriver {
         map.put("onlineTime",(int) redisTemplateForDriver.opsForHash().get(Key,"onlineTime"));
         return map;
 
+    }
+    public String UpdateReadyStatusOfDriver(IsReadyToAcceptRide  isReadyToAcceptRide){
+        String Key = RedisKey.Active_Driver.name()+":"+isReadyToAcceptRide.getDriverId();
+        redisTemplateForDriver.opsForHash().put(Key,"isReady",isReadyToAcceptRide.getValue());
+        redisTemplateForDriver.opsForHash().put(Key,"updatedAt",LocalDateTime.now().toString());
+        log.info("Driver id with "+isReadyToAcceptRide.getDriverId() +"Status is updated to "+
+                (boolean)redisTemplateForDriver.opsForHash().get(Key,"isReady"));
+        return "status updated";
     }
 
 }

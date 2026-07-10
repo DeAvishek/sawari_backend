@@ -1,9 +1,11 @@
 package com.sawari.sawari.ForDriver.entity;
 
+import com.sawari.sawari.forRider.entity.TripRecord;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Getter
@@ -23,7 +25,9 @@ public class Driver {
 
     private Boolean isVerified;
     private Boolean isOnline;
-    private Boolean isOnRide;
+    private Boolean isOnRide; //this will updated when user driver accepts a ride
     @Column(nullable = false)
     private String vehicleType;
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    private List<TripRecord>trips;
 }
