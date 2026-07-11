@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/Driver")
 public class DriverController {
@@ -28,5 +32,20 @@ public class DriverController {
     @PostMapping("/update_status")
     public ResponseEntity<?> updateStatus(@RequestBody IsReadyToAcceptRide isReadyToAcceptRide){
         return new ResponseEntity<>(redisServiceForDriver.UpdateReadyStatusOfDriver(isReadyToAcceptRide), HttpStatus.OK);
+    }
+    @GetMapping("/recent_trips/{phoneNumber}")
+    public ResponseEntity<?> getRecentTrips(@PathVariable String phoneNumber){
+        //dummy response to check frontend actually working
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("source","xxx");
+        map.put("destination","yyy");
+        map.put("fare",1200);
+        map.put("distance",12);
+        map.put("duration",190);
+        map.put("tripStatus","completed");
+        map.put("completedAt", LocalDateTime.now());
+        ArrayList<HashMap<String,Object>> list = new ArrayList<>();
+        list.add(map);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
