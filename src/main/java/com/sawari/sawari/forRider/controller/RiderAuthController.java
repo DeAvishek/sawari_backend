@@ -1,8 +1,8 @@
 package com.sawari.sawari.forRider.controller;
-import com.sawari.sawari.ForDriver.service.rateLimiter.RateLimiterService;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.service.CommonService;
+import com.sawari.sawari.common.service.RateLimiter.AuthRateLimiter;
 import com.sawari.sawari.forRider.entity.Rider;
 import com.sawari.sawari.common.dto.PhoneNumber;
 import com.sawari.sawari.forRider.service.genral.RiderService;
@@ -17,13 +17,13 @@ import java.util.HashMap;
 @Slf4j
 @RestController
 @RequestMapping("/Rider")
-public class AuthController {
+public class RiderAuthController {
 
     @Autowired
     private RiderService riderService;
 
     @Autowired
-    private RateLimiterService rateLimiterService;
+    private AuthRateLimiter authRateLimiter;
 
     @Autowired
     private CommonService commonService;
@@ -32,6 +32,9 @@ public class AuthController {
     @PostMapping("/create")
     public ResponseEntity<?> createRider(@RequestBody Rider rider){
         try{
+            if(!authRateLimiter.isRequestInsideThresholdForAuth()){
+                return new ResponseEntity<>("To many Request",HttpStatus.TOO_MANY_REQUESTS);
+            }
             HashMap<String,String> result = new HashMap<>();
             String response = riderService.CreateRider(rider);
             String[]info = response.split("#");
@@ -49,6 +52,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> LoginValidRider(@RequestBody PhoneNumber phNo){
         try{
+            if(!authRateLimiter.isRequestInsideThresholdForAuth()){
+                return new ResponseEntity<>("To many Request",HttpStatus.TOO_MANY_REQUESTS);
+            }
             System.out.println(phNo);
             OtpSession session = commonService.loginService(phNo);
             return new ResponseEntity<>(session, HttpStatus.OK);

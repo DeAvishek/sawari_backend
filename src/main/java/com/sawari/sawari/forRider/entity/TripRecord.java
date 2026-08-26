@@ -51,8 +51,9 @@ public class TripRecord {
     @JoinColumn(name = "UserId")
     private Rider rider;
 
+    //nullable true because when ride is created driver is searching
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DriverId")
+    @JoinColumn(name = "DriverId",nullable = true)
     private Driver driver;
 
 }
