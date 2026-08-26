@@ -1,5 +1,4 @@
 package com.sawari.sawari.forRider.controller;
-
 import com.sawari.sawari.ForDriver.service.rateLimiter.RateLimiterService;
 import com.sawari.sawari.common.dto.OtpPojo;
 import com.sawari.sawari.common.dto.OtpSession;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 @Slf4j
 @RestController
 @RequestMapping("/Rider")
-public class RiderController {
+public class AuthController {
 
     @Autowired
     private RiderService riderService;
@@ -50,9 +49,6 @@ public class RiderController {
     @PostMapping("/login")
     public ResponseEntity<?> LoginValidRider(@RequestBody PhoneNumber phNo){
         try{
-            if(!rateLimiterService.isRequestInsideThresholdForAuth()){
-                return  new ResponseEntity<>("to many request",HttpStatus.TOO_MANY_REQUESTS);
-            }
             System.out.println(phNo);
             OtpSession session = commonService.loginService(phNo);
             return new ResponseEntity<>(session, HttpStatus.OK);

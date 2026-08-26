@@ -1,5 +1,30 @@
 
 services:
+  spring-boot-app:
+    image: eclipse-temurin:17-jdk
+    container_name: sawari-spring-boot
+    working_dir: /app
+    restart: always
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./target/sawari-0.0.1-SNAPSHOT.jar:/app/app.jar
+    command: ["java","-jar","app.jar"]
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ride_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      LOCATIONIQ_API_KEY: ${LOCATIONIQ_API_KEY}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER}
+
   mysql:
     image: mysql:8.0
     container_name: ride_mysql
@@ -11,6 +36,7 @@ services:
       - "3307:3306"  #host:container
     volumes:
       - mysql_data:/var/lib/mysql
+
   redis:
     image: redis:latest
     container_name: ride_redis
