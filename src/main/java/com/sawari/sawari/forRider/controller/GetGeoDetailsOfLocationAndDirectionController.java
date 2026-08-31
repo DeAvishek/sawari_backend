@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/get")
+@RequestMapping("/Rider/get")
 public class GetGeoDetailsOfLocationAndDirectionController {
     @Autowired
     private GetLatLong getLatLong;
