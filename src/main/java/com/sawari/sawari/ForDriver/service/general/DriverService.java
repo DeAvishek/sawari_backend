@@ -42,25 +42,25 @@ public class DriverService {
                 commonRedisService.setRefreshTokenForDriver(savedDriver);
                 //return the bearer , refresh-token with username for  logg in user
     }
-    public void updateInRedis(Driver existedDriver){
-        redisServiceForDriver.AddOnlineDriver(existedDriver);
-    }
+//    public void updateInRedis(Driver existedDriver){
+//        redisServiceForDriver.AddOnlineDriver();
+//    }
 
-    @Scheduled(fixedRate = 60000)
-    public void cleanOfflineDriversFromRedis(){
-        Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active_Driver:*");
-        if(redisKeys==null || redisKeys.isEmpty()) return;
-        LocalDateTime currentTime = LocalDateTime.now();
-        for(String Key : redisKeys){
-            Object ob =  redisTemplateForOnlineDriver.opsForHash().get(Key,"updatedAt");
-            if(ob==null) continue;
-            LocalDateTime updatedAt = LocalDateTime.parse(ob.toString());
-            if(updatedAt.isBefore(currentTime.minusMinutes(1))){
-                redisTemplateForOnlineDriver.delete(Key);
-            };
-            log.info("Removed inactive driver {}", Key);
-        }
-    }
+//    @Scheduled(fixedRate = 60000)
+//    public void cleanOfflineDriversFromRedis(){
+//        Set<String>redisKeys = redisTemplateForOnlineDriver.keys("Active_Driver:*");
+//        if(redisKeys==null || redisKeys.isEmpty()) return;
+//        LocalDateTime currentTime = LocalDateTime.now();
+//        for(String Key : redisKeys){
+//            Object ob =  redisTemplateForOnlineDriver.opsForHash().get(Key,"updatedAt");
+//            if(ob==null) continue;
+//            LocalDateTime updatedAt = LocalDateTime.parse(ob.toString());
+//            if(updatedAt.isBefore(currentTime.minusMinutes(1))){
+//                redisTemplateForOnlineDriver.delete(Key);
+//            };
+//            log.info("Removed inactive driver {}", Key);
+//        }
+//    }
     public HashMap<String,Integer>summaryService(String PhoneNumber){
         return redisServiceForDriver.getTodaySummary(PhoneNumber);
     }

@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.sawari.sawari.common.dto.Geocode;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,17 +95,17 @@ public class RedisServiceForRider {
     }
 
     //Part 4 --- for create a Ride session in redis
-    public void createRideSession(Integer riderId,Integer rideId,String pickup,String drop){
+    public void createRideSession(Integer riderId,Long rideId,String pickup,String drop){
         try {
-            String Key = "ride"+rideId;
+            String Key = "ride:session:"+rideId;
             redisTemplateForRideSession.opsForHash().put(Key,"riderId",riderId);
-            redisTemplateForRideSession.opsForHash().put(Key,"driverId",0);
+            redisTemplateForRideSession.opsForHash().put(Key,"driverId","");
             redisTemplateForRideSession.opsForHash().put(Key,"otp","123456"); //otp is hard coded
             redisTemplateForRideSession.opsForHash().put(Key,"pickup",pickup);
             redisTemplateForRideSession.opsForHash().put(Key,"destination",drop);
             redisTemplateForRideSession.opsForHash().put(Key,"status",EnumValues.TripStatusEnum.Requested.name());
-            redisTemplateForRideSession.opsForHash().put(Key,"createdAt",LocalDateTime.now());
-            redisTemplateForRideSession.opsForHash().put(Key,"updatedAt",LocalDateTime.now());
+            redisTemplateForRideSession.opsForHash().put(Key,"createdAt", Instant.now());
+            redisTemplateForRideSession.opsForHash().put(Key,"updatedAt", Instant.now());
             redisTemplateForRideSession.expire(Key,2,TimeUnit.HOURS);
             log.info("Successfully Created Ride Session😍");
         }catch (Exception e){

@@ -6,10 +6,14 @@ import com.sawari.sawari.forRider.entity.Rider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.geo.*;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -22,8 +26,13 @@ public class CommonRedisService {
     @Autowired
     public RedisTemplate<String,String> redisTemplateForRefreshToken;
 
+    @Autowired
+    public RedisTemplate<String,Object> redisTemplateForDriver;
+
     @Value("${spring.app.jwtRefreshExpirationMs}")
     private Long Expiry;
+
+    private static final String DRIVER_LOCATION_KEY = "drivers:locations";
 
     public String setRefreshTokenForDriver(Driver driver){
         String token = UUID.randomUUID().toString();
@@ -73,4 +82,23 @@ public class CommonRedisService {
         }
     }
     //--->end
+    //find nearby drivers
+    public List<String>findNearbyDrivers(double longitude,double latitude,int km){
+        Point p= new Point(longitude,latitude);
+        Circle circle = new Circle(
+                p,
+                new Distance(km, Metrics.KILOMETERS)
+        );
+        GeoResults<RedisGeoCommands.GeoLocation<Object>> results =
+                redisTemplateForDriver.opsForGeo().radius(
+                        DRIVER_LOCATION_KEY,
+                        circle
+                );
+        List<String> driverIds = new ArrayList<>();
+        for (GeoResult<RedisGeoCommands.GeoLocation<Object>> result : results) {
+            Object driverId = result.getContent().getName();
+            driverIds.add(String.valueOf(driverId));
+        }
+        return driverIds;
+    }
 }

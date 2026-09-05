@@ -12,4 +12,6 @@ public class RedisTripSession {
     private Double distance;
     private Double duration;
     private Integer riderId;
+    private double longitude;
+    private double latitude;
 }

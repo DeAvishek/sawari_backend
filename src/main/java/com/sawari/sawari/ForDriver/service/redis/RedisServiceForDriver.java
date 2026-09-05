@@ -8,6 +8,7 @@ import com.sawari.sawari.common.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,17 +31,15 @@ public class RedisServiceForDriver {
 
     @Value("${spring.app.jwtRefreshExpirationMs}")
     private Long Expiry;
-
-    public void AddOnlineDriver(Driver driver){
-        String Key = "Active-driver:"+Integer.toString(driver.getId());
-        redisTemplateForDriver.opsForHash().put(Key,"driver",Integer.toString(driver.getId()));
-        redisTemplateForDriver.opsForHash().put(Key,"latitude","");
-        redisTemplateForDriver.opsForHash().put(Key,"longitude","");
-        redisTemplateForDriver.opsForHash().put(Key,"phoneNo",driver.getPhoneNumber());
-        redisTemplateForDriver.opsForHash().put(Key,"isReady",false);
-        redisTemplateForDriver.opsForHash().put(Key,"isOnRide",false);
-        redisTemplateForDriver.opsForHash().put(Key,"updatedAt", LocalDateTime.now().toString());
+    private static final String driverLocationKey = "Active:driver";
+    public void AddOnlineDriver(String driverId,double longitude,double latitude){
+        redisTemplateForDriver.opsForGeo().add(
+                driverLocationKey,
+                new Point(longitude,latitude),
+                driverId
+        );
         log.info("Successfully Added online Driver😍");
+
     }
     //--->end
     public HashMap<String, Integer> getTodaySummary(String phoneNumber){
