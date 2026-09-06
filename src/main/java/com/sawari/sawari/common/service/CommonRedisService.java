@@ -5,6 +5,7 @@ import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.forRider.entity.Rider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
@@ -24,15 +25,17 @@ public class CommonRedisService {
     public RedisTemplate<String, OtpSession> redisTemplateForOtpSession;
 
     @Autowired
+    @Qualifier("redisTemplate3ForAutocomplete")
     public RedisTemplate<String,String> redisTemplateForRefreshToken;
 
     @Autowired
-    public RedisTemplate<String,Object> redisTemplateForDriver;
+    @Qualifier("driverGeoRedisTemplate")
+    public RedisTemplate<String,String> redisTemplateForDriver;
 
     @Value("${spring.app.jwtRefreshExpirationMs}")
     private Long Expiry;
 
-    private static final String DRIVER_LOCATION_KEY = "drivers:locations";
+    private static final String DRIVER_LOCATION_KEY = "Active:driver";
 
     public String setRefreshTokenForDriver(Driver driver){
         String token = UUID.randomUUID().toString();
@@ -89,15 +92,15 @@ public class CommonRedisService {
                 p,
                 new Distance(km, Metrics.KILOMETERS)
         );
-        GeoResults<RedisGeoCommands.GeoLocation<Object>> results =
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results =
                 redisTemplateForDriver.opsForGeo().radius(
                         DRIVER_LOCATION_KEY,
                         circle
                 );
         List<String> driverIds = new ArrayList<>();
-        for (GeoResult<RedisGeoCommands.GeoLocation<Object>> result : results) {
-            Object driverId = result.getContent().getName();
-            driverIds.add(String.valueOf(driverId));
+        for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : results) {
+            String driverId = result.getContent().getName();
+            driverIds.add(driverId);
         }
         return driverIds;
     }

@@ -7,6 +7,7 @@ import com.sawari.sawari.common.dto.DirectionResponse;
 import com.sawari.sawari.common.support.EnumValues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.sawari.sawari.common.dto.Geocode;
@@ -27,6 +28,7 @@ public class RedisServiceForRider {
     private RedisTemplate<String,DirectionResponse> redisTemplateForGeometry;
 
     @Autowired
+    @Qualifier("redisTemplate3ForAutocomplete")
     private RedisTemplate<String, String> redisTemplateForAutocomplete;
 
     @Autowired

@@ -7,6 +7,7 @@ import com.sawari.sawari.common.dto.OtpSession;
 import com.sawari.sawari.common.dto.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,13 +22,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedisServiceForDriver {
     @Autowired
-    public RedisTemplate<String,Object> redisTemplateForDriver;
+    @Qualifier("driverGeoRedisTemplate")
+    public RedisTemplate<String,String> redisTemplateForDriver;
 
     @Autowired
     public RedisTemplate<String, OtpSession> redisTemplateForOtpSession;
 
-    @Autowired
-    public RedisTemplate<String,String> redisTemplateForRefreshToken;
+//    @Autowired
+//    @Qualifier("redisTemplate3ForAutocomplete")
+//    public RedisTemplate<String,String> redisTemplateForRefreshToken;
 
     @Value("${spring.app.jwtRefreshExpirationMs}")
     private Long Expiry;

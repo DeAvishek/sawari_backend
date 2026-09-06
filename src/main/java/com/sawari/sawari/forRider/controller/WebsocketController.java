@@ -29,6 +29,10 @@ public class WebsocketController {
         TripRecord trip = tripService.saveTrip(redisTripSession);
         redisServiceForRider.createRideSession(trip.getRider().getId(),trip.getId(),trip.getSource(),trip.getDestination());
         List<String>nearbyDrivers = commonRedisService.findNearbyDrivers(redisTripSession.getLongitude(),redisTripSession.getLatitude(),5);
+        for(String driver:nearbyDrivers){
+            System.out.println("nearby drivers are:).."+driver);
+        }
+        System.out.println("nearby drivers are:."+nearbyDrivers.size());
         return redisTripSession;
     }
 }
