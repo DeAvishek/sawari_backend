@@ -2,6 +2,7 @@ package com.sawari.sawari.forRider.controller;
 
 import com.sawari.sawari.common.dto.RedisTripSession;
 import com.sawari.sawari.common.service.CommonRedisService;
+import com.sawari.sawari.common.service.DriverMatchingHandler;
 import com.sawari.sawari.forRider.entity.TripRecord;
 import com.sawari.sawari.forRider.service.genral.TripService;
 import com.sawari.sawari.forRider.service.redis.RedisServiceForRider;
@@ -16,11 +17,21 @@ public class WebsocketController {
     private final TripService tripService;
     private final RedisServiceForRider redisServiceForRider;
     private final CommonRedisService  commonRedisService;
+    DriverMatchingHandler fiveKm;
+    DriverMatchingHandler tenKm;
+    DriverMatchingHandler twentyKm;
     public WebsocketController(TripService tripService, RedisServiceForRider redisServiceForRider,CommonRedisService commonRedisService) {
         this.tripService = tripService;
         this.redisServiceForRider = redisServiceForRider;
         this.commonRedisService = commonRedisService;
+        this.fiveKm = new DriverMatchingHandler(commonRedisService,5);
+        this.tenKm = new DriverMatchingHandler(commonRedisService,10);
+        this.twentyKm = new DriverMatchingHandler(commonRedisService,20);
+        fiveKm.setNext(tenKm);
+        tenKm.setNext(twentyKm);
     }
+
+
     @MessageMapping("/sendTrip")
     @SendTo("/topic/tripStatus")
     public RedisTripSession sendTripMessage(RedisTripSession redisTripSession)
@@ -28,7 +39,7 @@ public class WebsocketController {
         System.out.println("got it...:)" + redisTripSession);
         TripRecord trip = tripService.saveTrip(redisTripSession);
         redisServiceForRider.createRideSession(trip.getRider().getId(),trip.getId(),trip.getSource(),trip.getDestination());
-        List<String>nearbyDrivers = commonRedisService.findNearbyDrivers(redisTripSession.getLongitude(),redisTripSession.getLatitude(),5);
+        List<String>nearbyDrivers = fiveKm.findDrivers(redisTripSession.getLongitude(),redisTripSession.getLatitude());
         for(String driver:nearbyDrivers){
             System.out.println("nearby drivers are:).."+driver);
         }
